@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 
-const port = process.env.port || 8124
+const port = process.env.PORT || 8124
 const app = express()
 
 // Wear helmet saves lives :)
