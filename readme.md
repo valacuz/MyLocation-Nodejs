@@ -1,6 +1,8 @@
 # My Location web services (node.js)
 A practicing web services project written on node.js contains CRUD operation.
 
+[![Build Status](https://travis-ci.org/valacuz/my-location-node.svg?branch=master)](https://travis-ci.org/valacuz/my-location-node)
+
 ## **Dependencies**
 - Application
     - [expressjs](https://github.com/expressjs/express) - Web framework for node.js
