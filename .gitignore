@@ -1,0 +1,13 @@
+# Logs
+logs
+*.log
+.DS_Store
+
+# Compiled binary addons (http://nodejs.org/api/addons.html)
+build/Release
+
+# Dependency directory
+node_modules
+
+# Optional npm cache directory
+.npm
