@@ -3,6 +3,8 @@ A practicing web services project written on node.js contains CRUD operation.
 
 [![Build Status](https://travis-ci.org/valacuz/my-location-node.svg?branch=master)](https://travis-ci.org/valacuz/my-location-node)
 
+[![Coverage Status](https://coveralls.io/repos/github/valacuz/my-location-node/badge.svg?branch=master)](https://coveralls.io/github/valacuz/my-location-node?branch=master)
+
 ## **Dependencies**
 - Application
     - [expressjs](https://github.com/expressjs/express) - Web framework for node.js
@@ -14,6 +16,7 @@ A practicing web services project written on node.js contains CRUD operation.
     - [mocha](https://mochajs.org) - Javascript testing framework for node.js
     - [chaijs](http://www.chaijs.com) - BDD/TDD assertion library for node.js
     - [chai-http](https://github.com/chaijs/chai-http) - HTTP integration testing for chai assertion
+    - [istanbuljs](https://github.com/istanbuljs/nyc) - Javascript test coverage 
 
 ## **Structure**
 - `app.js` - The entry point to application. This file defines express server. It also requires `route` to handle request from clients.

@@ -11,3 +11,9 @@ node_modules
 
 # Optional npm cache directory
 .npm
+
+# Istanbul report
+.nyc_output
+
+# coverage report
+coverage

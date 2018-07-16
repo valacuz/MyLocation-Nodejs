@@ -1,12 +1,15 @@
 language: node_js
-node_js: "8"
-
+node_js: '8'
 sudo: required
 cache:
   directories:
-    - "node_modules"
-
+  - node_modules
 install:
-  - npm install
+- npm install
 script:
-  - npm test
+- npm test
+deploy:
+  provider: heroku
+  app: blooming-bayou-70734
+  api_key:
+    secure: UL2mlCtymEpHkwLj+s4ukp0a1VxvGoLzr4+iRVuCYvaMEeTiibKPTWCV2qf07/318vDaEPk8itbSsxsDpUgaairMKFbg4N06taVuC8uBeaN0MThabhVuoS9dhxnOLor2dtLmzYmSEXILQBQC83rN1PxQVAKImCISlXXXJnnHRURvGgnh4PT7YmBhFInoI4lamlGxdnT7XLTkGxdAalWAF6Gn2vxKd1PX70WT8UnL94/b7IlOfIwWSRlZla5/swpt6kQzkkVZwzJipAIKPWRxWxs6/Ax5G5N5KChBcz0YvDEkydCq/CzCfphsDF/l5QWLJhxlRaiD1JCRQ+N1uKG1GfmHkr42TwqcgYjoHYXCm6IYtPE10xI7/1ZEPvJ/CkNDB1uXoMkbaiW2nwgMOA9SXuboz8vrv27W0eyZHNtVhUz8/ctg/HeaDhTkJPignB5B957x7ktq7NKo01kYHfkr4jLz3Q/QAz0Lp6xzJ4RaC2FCn8Z3uQLc6RYaGSKGSKUUOLNHytWHY70L5FrS0U26U+wSX1O5kefQNStKUKyFrj5L4uIafA2+2FV5wFpAiHByIcXvCuK9idPSW0uinUnAp4r2/LT3piKWaaWa1Rb360mNSrIiHwQFaHslNe4iFL37Rr5ecTvqF6HtW1v0QtJJW3fMjIbvv7fB+tVt9CLExCo=
