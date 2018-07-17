@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const TypeController = require('./../controller/type-controller')
+const TypeController = require('./../../controller/v1/type-controller')
 const controller = new TypeController()
 
 router.get('/', controller.getTypes)

@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const PlaceController = require('./../controller/place-controller')
+const PlaceController = require('./../../controller/v1/place-controller')
 const controller = new PlaceController()
 
 router.get('/', controller.getPlaces)

@@ -12,7 +12,7 @@ app.use(helmet())
 app.use(bodyParser.json())
 
 // Router
-app.use(require('./route'))
+app.use(require('./route/v1'))
 
 // Listen application with specify port number
 app.listen(port, () => console.log(`Server listening on port ${port}`))
