@@ -54,7 +54,7 @@ describe('Place types API', () => {
     })
 
     describe('Create', () => {
-        it('Should not insert place and get status 400 when post with no body', () => {
+        it('Should not create type and get status 400 when post with no body', () => {
             chai.request(server)
                 .post('/api/types')
                 .set('content-type', 'application/json')
@@ -63,7 +63,7 @@ describe('Place types API', () => {
                     expect(response).to.have.status(400)
                 })
         })
-        it('Should not insert place and get status 400 when content type is not application/json', () => {
+        it('Should not create type and get status 400 when content type is not application/json', () => {
             chai.request(server)
                 .post('/api/types')
                 .set('content-type', 'text')
@@ -73,7 +73,17 @@ describe('Place types API', () => {
                     expect(response).to.have.status(400)
                 })
         })
-        it('Should insert place and get status 201 when post object in correct form', (done) => {
+        it('Should not create type and get status 404 when post type_id in queryString', () => {
+            chai.request(server)
+                .post(`/api/types/${SAMPLE_NOT_EXISTS_TYPE[0]}`)
+                .set('content-type', 'application/json')
+                .send(SAMPLE_INSERT_TYPE)
+                .end((_, response) => {
+                    // Then service should return status code 404 (not found)
+                    expect(response).to.have.status(404)
+                })
+        })
+        it('Should create type and get status 201 when post object in correct form', (done) => {
             var insertTypeId = 0
             chai.request(server)
                 .post('/api/types')
@@ -170,13 +180,13 @@ describe('Place types API', () => {
     describe('Delete', () => {
         it('Should delete type and get status 204 from given type_id', (done) => {
             chai.request(server)
-                .del(`/api/types/${SAMPLE_TYPE[0].type_id}`)
+                .del(`/api/types/${SAMPLE_UPDATE_TYPE.type_id}`)
                 .then(response => {
                     // Then service should return status code 204 (no content)
                     expect(response).to.have.status(204)
                     // To proof data was deleted, try to query it
                     return chai.request(server)
-                        .get(`/api/types/${SAMPLE_TYPE[0].type_id}`)
+                        .get(`/api/types/${SAMPLE_UPDATE_TYPE.type_id}`)
                 })
                 .then(response => {
                     // Then service should return status code 404 (not found)
@@ -186,9 +196,17 @@ describe('Place types API', () => {
                 })
                 .catch(err => done(err))
         })
-        it('Should not delete place and get status 401 when given type_id which not exists', () => {
+        it('Should not delete type and get status 404 when type_id is not provided', () => {
             chai.request(server)
-                .del('/api/places/10001')
+                .del('/api/types')
+                .end((_, response) => {
+                    // Then service should return status code 404 (not found)
+                    expect(response).to.have.status(404)
+                })
+        })
+        it('Should not delete type and get status 401 when given type_id which not exists', () => {
+            chai.request(server)
+                .del(`/api/types/${SAMPLE_NOT_EXISTS_TYPE.type_id}`)
                 .end((_, response) => {
                     // Then service should return status code 401 (unauthorized)
                     expect(response).to.have.status(401)

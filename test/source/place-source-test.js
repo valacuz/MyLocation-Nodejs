@@ -5,40 +5,35 @@ describe('PlaceSource', () => {
 
     beforeEach(() => {
         // Clear all data for each test case.
-        var placeSource = new PlaceSource()
+        const placeSource = new PlaceSource()
         placeSource.clear()
     })
 
     it('retrieve place by place_id which not exists should be error', () => {
-        var placeSource = new PlaceSource()
+        const placeSource = new PlaceSource()
         // Given place_id which not match any rows in data source
         placeSource.getPlaceById('ABCDEF')
-            // Then result must be rejected, and error should be returned
-            .catch(err => expect(err).to.be.an('error'))
+            // Then place must be undefined (not found)
+            .then(place => expect(place).to.be.undefined)
     })
-
-    it('add place then it should be retrieved', (done) => {
-        var placeSource = new PlaceSource()
+    it('Should be error when get place by undefined place_id', () => {
+        const placeSource = new PlaceSource()
+        // Given undefined as place_id
+        placeSource.getPlaceById(undefined)
+            // Then place must be undefined (not found)
+            .then(place => expect(place).to.be.undefined)
+    })
+    it('Should retrieve place which just added to data source', () => {
+        const placeSource = new PlaceSource()
         // Given new place and add to data source
         placeSource.addPlace(samplePlaces[0])
             // When find place by fresh place_id
             .then(place => placeSource.getPlaceById(place.place_id))
             // Then the place should be retrieved from data source
-            .then(retrievePlace => {
-                expect(retrievePlace).to.have.property('place_id', samplePlaces[0].place_id)
-                expect(retrievePlace).to.have.property('place_name', samplePlaces[0].place_name)
-                expect(retrievePlace).to.have.property('place_type', samplePlaces[0].place_type)
-                expect(retrievePlace).to.have.property('latitude', samplePlaces[0].latitude)
-                expect(retrievePlace).to.have.property('longitude', samplePlaces[0].longitude)
-                expect(retrievePlace).to.have.property('starred', samplePlaces[0].starred)
-                expect(retrievePlace).to.have.property('picture_url', samplePlaces[0].picture_url)
-                done()
-            })
-            .catch(err => done(err))
+            .then(retrievePlace => expect(retrievePlace).to.deep.equal(samplePlaces[0]))
     })
-
-    it('add 2 place then all places should be retrieved', (done) => {
-        var placeSource = new PlaceSource()
+    it('Should retrieve all 2 place types which added to data source', () => {
+        const placeSource = new PlaceSource()
         // Given 2 new place to data source
         placeSource.addPlace(samplePlaces[0])
             .then(_ => placeSource.addPlace(samplePlaces[1]))
@@ -47,13 +42,12 @@ describe('PlaceSource', () => {
             // Then the number of places should be 2
             .then(places => {
                 expect(places).to.have.lengthOf(2)
-                done()
+                expect(places[0]).to.deep.equal(samplePlaces[0])
+                expect(places[1]).to.deep.equal(samplePlaces[1])
             })
-            .catch(err => done(err))
     })
-
-    it('update place then data should be retrieved', (done) => {
-        var placeSource = new PlaceSource()
+    it('update place then data should be retrieved', () => {
+        const placeSource = new PlaceSource()
         // Given new place into data source
         placeSource.addPlace(samplePlaces[0])
             // When change some attributes and update
@@ -70,19 +64,15 @@ describe('PlaceSource', () => {
                 expect(place).to.have.property('place_name', samplePlaces[2].place_name)
                 expect(place).to.have.property('latitude', samplePlaces[2].latitude)
                 expect(place).to.have.property('longitude', samplePlaces[2].longitude)
-                done()
             })
-            .catch(err => done(err))
     })
-
     it('update place by place_id which not exists should be error', () => {
-        var placeSource = new PlaceSource()
+        const placeSource = new PlaceSource()
         placeSource.updatePlace(samplePlaces[2])
             .catch(err => expect(err).to.be.an('error'))
     })
-
     it('delete place then data should not be retrieved', () => {
-        var placeSource = new PlaceSource()
+        const placeSource = new PlaceSource()
         // Given new place into data source
         placeSource.addPlace(samplePlaces[0])
             // When delete place by given id
@@ -91,16 +81,15 @@ describe('PlaceSource', () => {
             .then(() => placeSource.getPlaceById(samplePlaces[0].place_id))
             .catch(err => expect(err).to.be.an('error'))
     })
-
     it('delete place by place_id which not exists should be error', () => {
-        var placeSource = new PlaceSource()
+        const placeSource = new PlaceSource()
         placeSource.deletePlace(samplePlaces[1].place_id)
             .catch(err => expect(err).to.be.an('error'))
     })
 })
 
 // Sample test data
-var samplePlaces = [
+const samplePlaces = [
     {
         place_id: "A00010001",
         place_name: "Sample Place 1",

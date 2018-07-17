@@ -72,7 +72,7 @@ describe('Places API', () => {
     })
 
     describe('Create', () => {
-        it('Should not insert place and get status 400 when post with no body', () => {
+        it('Should not create place and get status 400 when post with no body', () => {
             chai.request(server)
                 .post('/api/places')
                 .set('content-type', 'application/json')
@@ -81,7 +81,7 @@ describe('Places API', () => {
                     expect(response).to.have.status(400)
                 })
         })
-        it('Should not insert place and get status 400 when content type is not application/json', () => {
+        it('Should not create place and get status 400 when content type is not application/json', () => {
             chai.request(server)
                 .post('/api/places')
                 .set('content-type', 'text')
@@ -91,7 +91,17 @@ describe('Places API', () => {
                     expect(response).to.have.status(400)
                 })
         })
-        it('Should insert place and get status 201 when post object in correct form', (done) => {
+        it('Should not create place and get status 404 when post with place_id in queryString', () => {
+            chai.request(server)
+                .post(`/api/places/${SAMPLE_NOT_EXISTS_PLACE[0]}`)
+                .set('content-type', 'application/json')
+                .send(SAMPLE_ADD_PLACE)
+                .end((_, response) => {
+                    // Then service should return status code 404 (not found)
+                    expect(response).to.have.status(404)
+                })
+        })
+        it('Should create place and get status 201 when post object in correct form', (done) => {
             chai.request(server)
                 .post('/api/places')
                 .set('content-type', 'application/json')
@@ -187,13 +197,13 @@ describe('Places API', () => {
     describe('Delete', () => {
         it('Should delete place and get status 204 from given place_id', (done) => {
             chai.request(server)
-                .del('/api/places/A0000001')
+                .del(`/api/places/${SAMPLE_UPDATE_PLACE.place_id}`)
                 .then(response => {
                     // Then service should return status code 204 (no Content)
                     expect(response).to.have.status(204)
                     // To proof data was deleted, try to query it
                     return chai.request(server)
-                        .get('/api/places/A0000001')
+                        .get(`/api/places/${SAMPLE_UPDATE_PLACE.place_id}`)
                 })
                 .then(response => {
                     // Then service should return status code 404 (not found)
@@ -203,9 +213,17 @@ describe('Places API', () => {
                 })
                 .catch(err => done(err))
         })
+        it('Should not delete place and get status 404 when place_id is not provided', () => {
+            chai.request(server)
+                .del('/api/places')
+                .end((_, response) => {
+                    // Then service should return status code 404 (not found)
+                    expect(response).to.have.status(404)
+                })
+        })
         it('Should not delete place and get status 401 when given place_id which not exists', () => {
             chai.request(server)
-                .del('/api/places/ABCDEFG')
+                .del(`/api/places/${SAMPLE_NOT_EXISTS_PLACE.place_id}`)
                 .end((_, response) => {
                     // Then service should return status code 401 (unauthorized)
                     expect(response).to.have.status(401)

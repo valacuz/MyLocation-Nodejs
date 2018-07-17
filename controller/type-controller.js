@@ -9,7 +9,7 @@ TypeController.prototype.getTypes = (_, response) => {
     const typeSource = new TypeSource()
     typeSource.getTypes()
         .then(types => response.json(types))
-        .catch(_ => response.sendStatus(503))
+        .catch(() => response.sendStatus(503))
 }
 
 TypeController.prototype.getTypeById = (request, response) => {
@@ -23,7 +23,7 @@ TypeController.prototype.getTypeById = (request, response) => {
                 response.sendStatus(404)
             }
         })
-        .catch(_ => response.sendStatus(503))
+        .catch(() => response.sendStatus(503))
 }
 
 TypeController.prototype.addType = (request, response) => {
@@ -45,7 +45,7 @@ TypeController.prototype.addType = (request, response) => {
                 .contentType(CONTENT_TYPE_JSON)
                 .send(JSON.stringify(newType))
         })
-        .catch(_ => response.sendStatus(503))
+        .catch(() => response.sendStatus(503))
 }
 
 TypeController.prototype.updateType = (request, response) => {
@@ -70,7 +70,7 @@ TypeController.prototype.updateType = (request, response) => {
                 response.sendStatus(401)
             }
         })
-        .catch(_ => response.sendStatus(503))
+        .catch(() => response.sendStatus(503))
 }
 
 TypeController.prototype.deleteType = (request, response) => {
@@ -85,7 +85,7 @@ TypeController.prototype.deleteType = (request, response) => {
                 response.sendStatus(401)
             }
         })
-        .catch(_ => response.sendStatus(503))
+        .catch(() => response.sendStatus(503))
 }
 
 module.exports = TypeController

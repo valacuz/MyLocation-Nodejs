@@ -1,11 +1,12 @@
 const router = require('express').Router()
 const PlaceController = require('./../controller/place-controller')
+const controller = new PlaceController()
 
-router.get('/', PlaceController.prototype.getPlaces)
-router.get('/:id', PlaceController.prototype.getPlaceById)
-router.post('/', PlaceController.prototype.addPlace)
-router.put('/:id', PlaceController.prototype.updatePlace)
-router.delete('/:id', PlaceController.prototype.deletePlace)
+router.get('/', controller.getPlaces)
+router.get('/:id', controller.getPlaceById)
+router.post('/', controller.addPlace)
+router.put('/:id', controller.updatePlace)
+router.delete('/:id', controller.deletePlace)
 
 // Otherwise, send 404 Not found
 router.all('/', (_, response) => response.sendStatus(404))

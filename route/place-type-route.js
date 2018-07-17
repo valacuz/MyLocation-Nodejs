@@ -1,11 +1,12 @@
 const router = require('express').Router()
 const TypeController = require('./../controller/type-controller')
+const controller = new TypeController()
 
-router.get('/', TypeController.prototype.getTypes)
-router.get('/:id', TypeController.prototype.getTypeById)
-router.post('/', TypeController.prototype.addType)
-router.put('/:id', TypeController.prototype.updateType)
-router.delete('/:id', TypeController.prototype.deleteType)
+router.get('/', controller.getTypes)
+router.get('/:id', controller.getTypeById)
+router.post('/', controller.addType)
+router.put('/:id', controller.updateType)
+router.delete('/:id', controller.deleteType)
 
 // Otherwise, send 404 Not found
 router.all('/', (_, response) => response.sendStatus(404))

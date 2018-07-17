@@ -9,7 +9,7 @@ PlaceController.prototype.getPlaces = (_, response) => {
     const placeSource = new PlaceSource()
     placeSource.getPlaces()
         .then(places => response.json(places))
-        .catch(_ => response.sendStatus(503))
+        .catch(() => response.sendStatus(503))
 }
 
 PlaceController.prototype.getPlaceById = (request, response) => {
@@ -22,7 +22,7 @@ PlaceController.prototype.getPlaceById = (request, response) => {
                 response.sendStatus(404)
             }
         })
-        .catch(_ => response.sendStatus(503))
+        .catch(() => response.sendStatus(503))
 }
 
 PlaceController.prototype.addPlace = (request, response) => {
@@ -44,7 +44,7 @@ PlaceController.prototype.addPlace = (request, response) => {
                 .contentType(CONTENT_TYPE_JSON)
                 .send(newPlace)
         })
-        .catch(_ => response.sendStatus(503))
+        .catch(() => response.sendStatus(503))
 }
 
 PlaceController.prototype.updatePlace = (request, response) => {
@@ -68,7 +68,7 @@ PlaceController.prototype.updatePlace = (request, response) => {
                 response.sendStatus(401)
             }
         })
-        .catch(_ => response.sendStatus(503))
+        .catch(() => response.sendStatus(503))
 }
 
 PlaceController.prototype.deletePlace = (request, response) => {
@@ -82,7 +82,7 @@ PlaceController.prototype.deletePlace = (request, response) => {
                 response.sendStatus(401)
             }
         })
-        .catch(_ => response.sendStatus(503))
+        .catch(() => response.sendStatus(503))
 }
 
 module.exports = PlaceController

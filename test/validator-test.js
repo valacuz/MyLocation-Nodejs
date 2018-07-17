@@ -8,7 +8,6 @@ describe('Test Validator class', () => {
             const result = new Validator().validatePlace(null)
             expect(result.error).to.be.an('error')
         })
-
         it('Should error when place_id is null', () => {
             const result = new Validator().validatePlace({
                 place_id: null
@@ -17,7 +16,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('place_id')
         })
-
         it('Should error when place_name is null', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
@@ -27,7 +25,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('place_name')
         })
-
         it('Should error when place_name is less than 4 characters', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
@@ -37,7 +34,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('place_name')
         })
-
         it('Should error when place_type is undefined', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
@@ -47,7 +43,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('place_type')
         })
-
         it('Should error when place_type is 0', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
@@ -58,7 +53,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('place_type')
         })
-
         it('Should error when place_type is more than 999', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
@@ -69,7 +63,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('place_type')
         })
-
         it('Should error when place_latitude is less than -90', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
@@ -81,7 +74,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('place_latitude')
         })
-
         it('Should error when place_latitude is more than 90', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
@@ -93,7 +85,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('place_latitude')
         })
-
         it('Should error when place_longitude is less than -180', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
@@ -106,7 +97,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('place_longitude')
         })
-
         it('Should error when place_longitude is more than 180', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
@@ -119,7 +109,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('place_longitude')
         })
-
         it('Should error when starred is null', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
@@ -133,7 +122,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('starred')
         })
-
         it('Should pass when input correct parameters', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
@@ -150,7 +138,6 @@ describe('Test Validator class', () => {
     })
 
     describe('Type', () => {
-
         it('Should error when place_id is not number', () => {
             const result = new Validator().validatePlaceType({
                 type_id: 'A1',
@@ -160,7 +147,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('type_id')
         })
-
         it('Should error when type_name is null', () => {
             const result = new Validator().validatePlaceType({
                 type_id: 1,
@@ -170,7 +156,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('type_name')
         })
-
         it('Should error when type_name is less than 4 characters', () => {
             const result = new Validator().validatePlaceType({
                 type_id: 1,
@@ -180,7 +165,6 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('type_name')
         })
-
         it('Should pass when type_id is number and type_name is more than 4 characters', () => {
             const result = new Validator().validatePlaceType({
                 type_id: 1,

@@ -8,12 +8,8 @@ PlaceSource.prototype.getPlaces = () => {
 
 PlaceSource.prototype.getPlaceById = (id) => {
     return new Promise((resolve, reject) => {
-        try {
-            const place = places.find(item => item.place_id === id)
-            resolve(place)
-        } catch (err) {
-            reject(err)
-        }
+        const place = places.find(item => item.place_id === id)
+        resolve(place)
     })
 }
 

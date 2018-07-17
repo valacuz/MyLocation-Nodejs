@@ -15,12 +15,8 @@ TypeSource.prototype.getTypes = () => {
 
 TypeSource.prototype.getTypeById = (id) => {
     return new Promise((resolve, reject) => {
-        try {
-            const type = types.find(item => item.type_id === id)
-            resolve(type)
-        } catch (err) {
-            reject(err)
-        }
+        const type = types.find(item => item.type_id === id)
+        resolve(type)
     })
 }
 
