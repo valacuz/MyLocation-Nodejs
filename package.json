@@ -1,12 +1,12 @@
 {
   "name": "my-location",
   "version": "1.0.0",
-  "description": "My practice REST services written with nodejs",
+  "description": "My practice REST services written with nodejs & expressjs",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "test": "mocha test --recursive --exit",
-    "coverage": "nyc --reporter=lcov --reporter=text-lcov mocha test --recursive --exit",
+    "coverage": "nyc --reporter=lcov mocha test --recursive --exit",
     "coveralls": "npm run-script coverage && ./node_modules/coveralls/bin/coveralls.js < coverage/lcov.info"
   },
   "dependencies": {
