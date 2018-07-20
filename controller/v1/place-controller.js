@@ -1,4 +1,4 @@
-const PlaceSource = require('./../../model/source/sample-place-source')
+const PlaceSource = require('./../../model/source/place')
 const Validator = require('./../../model/validator')
 
 const CONTENT_TYPE_JSON = 'application/json'

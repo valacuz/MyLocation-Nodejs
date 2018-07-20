@@ -1,5 +1,5 @@
 const expect = require('chai').expect
-const PlaceSource = require('./../../model/source/sample-place-source')
+const PlaceSource = require('./../../../model/source/place/sample-place-source')
 
 describe('PlaceSource', () => {
 

@@ -1,5 +1,5 @@
 const expect = require('chai').expect
-const TypeSource = require('./../../model/source/sample-type-source')
+const TypeSource = require('./../../../model/source/type/sample-type-source')
 
 describe('PlaceTypeSource', () => {
 

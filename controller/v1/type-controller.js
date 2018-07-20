@@ -1,4 +1,4 @@
-const TypeSource = require('./../../model/source/sample-type-source')
+const TypeSource = require('./../../model/source/type')
 const Validator = require('./../../model/validator')
 
 const CONTENT_TYPE_JSON = 'application/json'
