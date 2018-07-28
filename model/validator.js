@@ -13,7 +13,7 @@ const PLACE_SCHEMA = Joi.object().keys({
 }).required()
 
 const TYPE_SCHEMA = Joi.object().keys({
-    type_id: Joi.number().integer().greater(0),
+    type_id: Joi.string().min(4).max(255).required(),
     type_name: Joi.string().min(4).max(255).required()
 }).required()
 

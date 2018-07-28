@@ -138,9 +138,9 @@ describe('Test Validator class', () => {
     })
 
     describe('Type', () => {
-        it('Should error when place_id is not number', () => {
+        it('Should error when place_id is number', () => {
             const result = new Validator().validatePlaceType({
-                type_id: 'A1',
+                type_id: 10001,
                 type_name: 'Hospital'
             })
             // Then validation should be failed on field `type_id`
@@ -149,7 +149,7 @@ describe('Test Validator class', () => {
         })
         it('Should error when type_name is null', () => {
             const result = new Validator().validatePlaceType({
-                type_id: 1,
+                type_id: '54ac5555-fdd2-4d3d-9213-46b051da7704',
                 type_name: null
             })
             // Then validation should be failed on field `type_name`
@@ -158,8 +158,8 @@ describe('Test Validator class', () => {
         })
         it('Should error when type_name is less than 4 characters', () => {
             const result = new Validator().validatePlaceType({
-                type_id: 1,
-                type_name: 'two'
+                type_id: '54ac5555-fdd2-4d3d-9213-46b051da7704',
+                type_name: 'Etc'
             })
             // Then validation should be failed on field `type_name`
             expect(result.error).to.be.an('error')
@@ -167,8 +167,8 @@ describe('Test Validator class', () => {
         })
         it('Should pass when type_id is number and type_name is more than 4 characters', () => {
             const result = new Validator().validatePlaceType({
-                type_id: 1,
-                type_name: 'Hospital'
+                type_id: '54ac5555-fdd2-4d3d-9213-46b051da7704',
+                type_name: 'Hotel'
             })
             // Then error should be null
             expect(result.error).to.be.null

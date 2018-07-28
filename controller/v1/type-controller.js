@@ -14,8 +14,7 @@ TypeController.prototype.getTypes = (_, response) => {
 
 TypeController.prototype.getTypeById = (request, response) => {
     const typeSource = new TypeSource()
-    const id = Number.parseInt(request.params.id)
-    typeSource.getTypeById(id)
+    typeSource.getTypeById(request.params.id)
         .then(type => {
             if (type) {
                 response.json(type)
@@ -38,7 +37,7 @@ TypeController.prototype.addType = (request, response) => {
     }
     // Otherwise, add type to data source
     const typeSource = new TypeSource()
-    typeSource.addType(request.body.type_name)
+    typeSource.addType(body)
         .then(newType => {
             response.status(201)
                 .location(`types/${newType.type_id}`)
@@ -60,8 +59,7 @@ TypeController.prototype.updateType = (request, response) => {
         return
     }
     const typeSource = new TypeSource()
-    const id = Number.parseInt(request.params.id)
-    typeSource.getTypeById(id)
+    typeSource.getTypeById(queryString.id)
         .then(type => {
             if (type) {
                 typeSource.updateType(body)
@@ -75,7 +73,7 @@ TypeController.prototype.updateType = (request, response) => {
 
 TypeController.prototype.deleteType = (request, response) => {
     const typeSource = new TypeSource()
-    const id = Number.parseInt(request.params.id)
+    const id = request.params.id
     typeSource.getTypeById(id)
         .then(type => {
             if (type) {

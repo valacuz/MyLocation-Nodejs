@@ -1,11 +1,6 @@
-var types = [
-    { type_id: 1, type_name: "Education" },
-    { type_id: 2, type_name: "Department store" },
-    { type_id: 3, type_name: "Restaurant" },
-    { type_id: 4, type_name: "Relaxation" }
-]
-
 const TypeSource = function () { }
+
+var types = []
 
 TypeSource.prototype.getTypes = () => {
     return new Promise((resolve, reject) => {
@@ -20,26 +15,18 @@ TypeSource.prototype.getTypeById = (id) => {
     })
 }
 
-TypeSource.prototype.addType = (name) => {
+TypeSource.prototype.addType = (type) => {
     return new Promise((resolve, reject) => {
-        // Generate latest id for new row
-        var defaultId = types.length > 0 ? types[0].type_id + 1 : 1
-        var latestId = types.reduce((max, item) => item.type_id > max ? item.type_id : max, defaultId)
-        // Create object and add to array
-        var newType = { 'type_id': latestId + 1, 'type_name': name }
-        types.push(newType)
-        resolve(newType)
+        types.push(type)
+        resolve(type)
     })
 }
 
 // TODO: Ensure this method works!
-TypeSource.prototype.addTypes = (names) => {
+TypeSource.prototype.addTypes = (newTypes) => {
     return new Promise((resolve, reject) => {
-        for (var i = 0; i < names.length; i++) {
-            var defaultId = types.length > 0 ? types[0].type_id + 1 : 1
-            var latestId = types.reduce((max, item) => item.type_id > max ? item.type_id : max, defaultId)
-            var newType = { type_id: latestId + 1, type_name: names[i] }
-            types.push(newType)
+        for (var i = 0; i < newTypes.length; i++) {
+            types.push(newTypes[i])
         }
         resolve()
     })
