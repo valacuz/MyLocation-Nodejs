@@ -9,43 +9,63 @@ describe('PlaceTypeSource', () => {
         typeSource.clear()
     })
 
-    it('Should not success to retrieve place type by not exists type_id', () => {
+    it('Should not success to retrieve place type by not exists type_id', (done) => {
         const typeSource = new TypeSource()
         // Given a place type and add to data source
         typeSource.addType(SAMPLE_TYPES[0])
             // When find place type by giving not exists type_id
             .then(_ => typeSource.getTypeById('NOT_EXISTS_TYPE_ID'))
             // Then place type must not found (be undefined)
-            .then(type => expect(type).to.be.undefined)
+            .then(type => {
+                expect(type).to.be.undefined
+                // Mark as complete
+                done()
+            })
+            .catch(err => done(err))
     })
-    it('Should not success to retrieve place type by undefined type_id', () => {
+    it('Should not success to retrieve place type by undefined type_id', (done) => {
         const typeSource = new TypeSource()
         // Given a place type and add to data source
         typeSource.addType(SAMPLE_TYPES[0])
             // When find place type by giving undefined type_id
             .then(_ => typeSource.getTypeById(undefined))
             // Then place type must not found (be undefined)
-            .then(type => expect(type).to.be.undefined)
+            .then(type => {
+                expect(type).to.be.undefined
+                // Mark as complete
+                done()
+            })
+            .catch(err => done(err))
     })
-    it('Should success to retrieve place type which just added to data source', () => {
+    it('Should success to retrieve place type which just added to data source', (done) => {
         const typeSource = new TypeSource()
         // Given a place type and add to data source
         typeSource.addType(SAMPLE_TYPES[0])
             // When find place type by fresh type_id
             .then(type => typeSource.getTypeById(type.type_id))
             // Then the type should be retrieved from data source and equals to source object
-            .then(type => expect(type).to.deep.equal(SAMPLE_TYPES[0]))
+            .then(type => {
+                expect(type).to.deep.equal(SAMPLE_TYPES[0])
+                // Mark as done
+                done()
+            })
+            .catch(err => done(err))
     })
-    it('Should success to retrieve all 3 place types which added to data source', () => {
+    it('Should success to retrieve all 3 place types which added to data source', (done) => {
         const typeSource = new TypeSource()
         // Given an array of place type and add to data source
         typeSource.addTypes(SAMPLE_TYPES)
             // When retrieve all types from data source
             .then(_ => typeSource.getTypes())
             // Then the number of types should be equals to size of array `SAMPLE_PLACE`
-            .then(types => expect(types).to.have.lengthOf(SAMPLE_TYPES.length))
+            .then(types => {
+                expect(types).to.have.lengthOf(SAMPLE_TYPES.length)
+                // Mark as done
+                done()
+            })
+            .catch(err => done(err))
     })
-    it('update place type then data should be updated', () => {
+    it('update place type then data should be updated', (done) => {
         const typeSource = new TypeSource()
         var newTypeId
         // Given new type to data source
@@ -59,8 +79,12 @@ describe('PlaceTypeSource', () => {
             // And retrieve updated type by type_id from data source
             .then(() => typeSource.getTypeById(newTypeId))
             // Then type attributes should be updated
-            .then(type =>
-                expect(type).to.have.property('type_name', SAMPLE_TYPES[2].type_name))
+            .then(type => {
+                expect(type).to.have.property('type_name', SAMPLE_TYPES[2].type_name)
+                // Mark as done
+                done()
+            })
+            .catch(err => done(err))
     })
     it('update place type by type_id which not exists should be error', () => {
         const typeSource = new TypeSource()
