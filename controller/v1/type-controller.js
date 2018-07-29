@@ -40,7 +40,7 @@ TypeController.prototype.addType = (request, response) => {
     typeSource.addType(body)
         .then(newType => {
             response.status(201)
-                .location(`types/${newType.type_id}`)
+                .location(`/types/${newType.type_id}`)
                 .contentType(CONTENT_TYPE_JSON)
                 .send(JSON.stringify(newType))
         })
