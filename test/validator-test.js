@@ -43,21 +43,21 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('place_type')
         })
-        it('Should error when place_type is 0', () => {
+        it('Should error when place_type is a number', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
-                place_type: 0
+                place_type: 1
             })
             // Then validation should be failed on field `place_type`
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('place_type')
         })
-        it('Should error when place_type is more than 999', () => {
+        it('Should error when place_type is less than 4 characters', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
-                place_type: 1000
+                place_type: 'ABC'
             })
             // Then validation should be failed on field `place_type`
             expect(result.error).to.be.an('error')
@@ -67,7 +67,7 @@ describe('Test Validator class', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
-                place_type: 3,
+                place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
                 place_latitude: -90.005
             })
             // Then validation should be failed on field `place_latitude`
@@ -78,7 +78,7 @@ describe('Test Validator class', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
-                place_type: 3,
+                place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
                 place_latitude: 90.005
             })
             // Then validation should be failed on field `place_latitude`
@@ -89,7 +89,7 @@ describe('Test Validator class', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
-                place_type: 3,
+                place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
                 place_latitude: 13.549,
                 place_longitude: -180.005,
             })
@@ -101,7 +101,7 @@ describe('Test Validator class', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
-                place_type: 3,
+                place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
                 place_latitude: 13.549,
                 place_longitude: 180.005,
             })
@@ -113,7 +113,7 @@ describe('Test Validator class', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
-                place_type: 3,
+                place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
                 place_latitude: 13.549,
                 place_longitude: 100.182,
                 starred: null
@@ -126,7 +126,7 @@ describe('Test Validator class', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
-                place_type: 3,
+                place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
                 place_latitude: 13.549,
                 place_longitude: 100.182,
                 starred: false,
@@ -138,7 +138,7 @@ describe('Test Validator class', () => {
     })
 
     describe('Type', () => {
-        it('Should error when place_id is number', () => {
+        it('Should error when place_id is a number', () => {
             const result = new Validator().validatePlaceType({
                 type_id: 10001,
                 type_name: 'Hospital'
