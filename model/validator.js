@@ -3,7 +3,7 @@ const Joi = require('joi')
 const Validator = function () { }
 
 const PLACE_SCHEMA = Joi.object().keys({
-    place_id: Joi.string().min(6).max(50).required(),
+    place_id: Joi.string().min(6).max(50),
     place_name: Joi.string().min(4).max(255).required(),
     place_type: Joi.string().min(4).max(50).required(),
     place_latitude: Joi.number().min(-90).max(90).required(),
@@ -13,7 +13,7 @@ const PLACE_SCHEMA = Joi.object().keys({
 }).required()
 
 const TYPE_SCHEMA = Joi.object().keys({
-    type_id: Joi.string().min(4).max(50).required(),
+    type_id: Joi.string().min(4).max(50),
     type_name: Joi.string().min(4).max(255).required()
 }).required()
 

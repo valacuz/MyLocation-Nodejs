@@ -45,7 +45,7 @@ describe('PlaceTypeSource', () => {
             .then(type => typeSource.getTypeById(type.type_id))
             // Then the type should be retrieved from data source and equals to source object
             .then(type => {
-                expect(type).to.deep.equal(SAMPLE_TYPES[0])
+                expect(type.type_name).to.be.equal(SAMPLE_TYPES[0].type_name)
                 // Mark as done
                 done()
             })

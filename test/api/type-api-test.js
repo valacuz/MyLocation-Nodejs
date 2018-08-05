@@ -38,7 +38,7 @@ describe('Place types API', () => {
         it('Should not create type and get status 404 when post type_id in queryString', () => {
             chai.request(server)
                 // When try to create place at wrong url
-                .post(`/api/types/${SAMPLE_NOT_EXISTS_TYPE[0]}`)
+                .post(`/api/types/${SAMPLE_NOT_EXISTS_TYPE.type_id}`)
                 .set('content-type', 'application/json')
                 .send(MULTIPLE_INSERT_TYPE[0])
                 // Then service should return status code 404 (not found)
@@ -50,26 +50,40 @@ describe('Place types API', () => {
                 .post('/api/types')
                 .set('content-type', 'application/json')
                 .send(MULTIPLE_INSERT_TYPE[0])
-                .then(_ => {
+                .then(response => {
+                    // Insert or replace MULTIPLE_INSERT_TYPE[0].type_id with result type_id
+                    MULTIPLE_INSERT_TYPE[0].type_id = response.body.type_id
+                    // Insert next item to data source
                     return chai.request(server)
                         .post('/api/types')
                         .set('content-type', 'application/json')
                         .send(MULTIPLE_INSERT_TYPE[1])
                 })
-                .then(_ => {
+                .then(response => {
+                    // Insert or replace MULTIPLE_INSERT_TYPE[1].type_id with result type_id
+                    MULTIPLE_INSERT_TYPE[1].type_id = response.body.type_id
+                    // Insert next item to data source
                     return chai.request(server)
                         .post('/api/types')
                         .set('content-type', 'application/json')
                         .send(MULTIPLE_INSERT_TYPE[2])
                 })
-                .then(_ => {
+                .then(response => {
+                    // Insert or replace MULTIPLE_INSERT_TYPE[2].type_id with result type_id
+                    MULTIPLE_INSERT_TYPE[2].type_id = response.body.type_id
+                    // Insert next item to data source
                     return chai.request(server)
                         .post('/api/types')
                         .set('content-type', 'application/json')
                         .send(MULTIPLE_INSERT_TYPE[3])
                 })
                 // When retrieve all place types
-                .then(_ => { return chai.request(server).get('/api/types') })
+                .then(response => {
+                    // Insert or replace MULTIPLE_INSERT_TYPE[3].type_id with result type_id
+                    MULTIPLE_INSERT_TYPE[3].type_id = response.body.type_id
+                    // Insert next item to data source
+                    return chai.request(server).get('/api/types')
+                })
                 .then(response => {
                     // Then service should return status code 200 (OK)
                     expect(response).to.have.status(200)
@@ -89,6 +103,7 @@ describe('Place types API', () => {
                 .catch(err => done(err))
         })
         it('Should create place type when post object in correct form', (done) => {
+            var insertTypeId    // To store type_id
             chai.request(server)
                 .post('/api/types')
                 .set('content-type', 'application/json')
@@ -98,11 +113,13 @@ describe('Place types API', () => {
                     expect(response).to.have.status(201)
                     // And header content type should be `application/json`
                     expect(response).to.be.json
+                    // Store type_id from response to variable
+                    insertTypeId = response.body.type_id
                     // And header field `location` should return id
-                    expect(response).to.have.header('location', `/types/${SINGLE_INSERT_TYPE.type_id}`)
+                    expect(response).to.have.header('location', `/types/${insertTypeId}`)
                     // To proof data was stored, try to query it
                     return chai.request(server)
-                        .get(`/api/types/${SINGLE_INSERT_TYPE.type_id}`)
+                        .get(`/api/types/${insertTypeId}`)
                 })
                 .then(response => {
                     // Then service should return status code 200 (OK)
@@ -110,7 +127,10 @@ describe('Place types API', () => {
                     // And content type should be `application/json`
                     expect(response).to.be.json
                     // Compare by deep equal to traverse the objects and compare nested properties
-                    expect(response.body).to.deep.equal(SINGLE_INSERT_TYPE)
+                    expect(response.body).to.deep.equal({
+                        type_id: insertTypeId,
+                        type_name: SINGLE_INSERT_TYPE.type_name
+                    })
                     // Mark as done
                     done()
                 })
@@ -145,6 +165,7 @@ describe('Place types API', () => {
                 .end((_, response) => expect(response).to.have.status(401))
         })
         it('Should update type and get status 200 when update type in correct form', (done) => {
+            var insertTypeId    // To store type_id
             chai.request(server)
                 // Given a place type and add to data source
                 .post('/api/types')
@@ -153,18 +174,23 @@ describe('Place types API', () => {
                 .then(response => {
                     // And it must created successfully
                     expect(response).to.have.status(201)
+                    // Store type_id from response to variable
+                    insertTypeId = response.body.type_id
                     // When update place type
                     return chai.request(server)
-                        .put(`/api/types/${AFTER_UPDATE_TYPE.type_id}`)
+                        .put(`/api/types/${insertTypeId}`)
                         .set('content-type', 'application/json')
-                        .send(AFTER_UPDATE_TYPE)
+                        .send({
+                            type_id: insertTypeId,
+                            type_name: AFTER_UPDATE_TYPE.type_name
+                        })
                 })
                 .then(response => {
                     // Then service should return status code 200 (OK)
                     expect(response).to.have.status(200)
                     // To proof data was updated, try to query it
                     return chai.request(server)
-                        .get(`/api/types/${AFTER_UPDATE_TYPE.type_id}`)
+                        .get(`/api/types/${insertTypeId}`)
                 })
                 .then(response => {
                     // Then service should return status code 200 (OK)
@@ -172,8 +198,10 @@ describe('Place types API', () => {
                     // And header should be `application/json`
                     expect(response).to.be.json
                     // Compare by deep equal to traverse the objects and compare nested properties
-                    const body = response.body
-                    expect(body).to.deep.equal(AFTER_UPDATE_TYPE)
+                    expect(response.body).to.deep.equal({
+                        type_id: insertTypeId,
+                        type_name: AFTER_UPDATE_TYPE.type_name
+                    })
                     // Mark as done
                     done()
                 })
@@ -183,6 +211,7 @@ describe('Place types API', () => {
 
     describe('Delete', () => {
         it('Should delete type and get status 204 from given type_id', (done) => {
+            var insertTypeId    // To store insert id
             chai.request(server)
                 // Given a place type and add to data source
                 .post('/api/types')
@@ -191,16 +220,18 @@ describe('Place types API', () => {
                 .then(response => {
                     // And it must create successfully
                     expect(response).to.have.status(201)
+                    // Store type_id from response to variable
+                    insertTypeId = response.body.type_id
                     // When delete place type by type_id
                     return chai.request(server)
-                        .del(`/api/types/${SINGLE_DELETE_TYPE.type_id}`)
+                        .del(`/api/types/${insertTypeId}`)
                 })
                 .then(response => {
                     // Then service should return status code 204 (no content)
                     expect(response).to.have.status(204)
                     // To proof data was deleted, try to query it
                     return chai.request(server)
-                        .get(`/api/types/${SINGLE_DELETE_TYPE.type_id}`)
+                        .get(`/api/types/${insertTypeId}`)
                 })
                 .then(response => {
                     // Then service should return status code 404 (not found)
@@ -228,19 +259,16 @@ describe('Place types API', () => {
 })
 
 // Sample data
-const SINGLE_INSERT_TYPE =
-    { type_id: '47a7aa66-b2fd-4b2c-97ba-50df6bd3c163', type_name: 'Bakery' }
+const SINGLE_INSERT_TYPE = { type_name: 'Bakery' }
 const MULTIPLE_INSERT_TYPE = [
-    { type_id: '77527cb3-4b4c-4557-8dba-fc9fefcf6909', type_name: 'Education' },
-    { type_id: '7de84da2-fb05-4191-ac2c-b30951e7d0a5', type_name: 'Department store' },
-    { type_id: '771bf245-830a-41a4-b0db-76d72c240f46', type_name: 'Restaurant' },
-    { type_id: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4', type_name: 'Relaxation' }
+    { type_name: 'Education' },
+    { type_name: 'Department store' },
+    { type_name: 'Restaurant' },
+    { type_name: 'Relaxation' }
 ]
-const BEFORE_UPDATE_TYPE =
-    { type_id: 'f393aa36-8bf3-41c6-ae7b-b5399ce71793', type_name: 'Elder care' }
-const AFTER_UPDATE_TYPE =
-    { type_id: 'f393aa36-8bf3-41c6-ae7b-b5399ce71793', type_name: 'Museum' }
-const SINGLE_DELETE_TYPE =
-    { type_id: '56b8ed49-c6f7-4623-95e6-d430f575f7a8', type_name: 'Library' }
-const SAMPLE_NOT_EXISTS_TYPE =
-    { type_id: 'db5b7f1b-7902-4e88-8552-c80f555d5826', type_name: 'Unknown' }
+const BEFORE_UPDATE_TYPE = { type_name: 'Elder care' }
+const AFTER_UPDATE_TYPE = { type_name: 'Museum' }
+const SINGLE_DELETE_TYPE = { type_name: 'Library' }
+const SAMPLE_NOT_EXISTS_TYPE = {
+    type_id: 'db5b7f1b-7902-4e88-8552-c80f555d5826', type_name: 'Unknown'
+}

@@ -173,5 +173,12 @@ describe('Test Validator class', () => {
             // Then error should be null
             expect(result.error).to.be.null
         })
+        it('Should pass when type_id is not provided', () => {
+            const result = new Validator().validatePlaceType({
+                type_name: 'Hotel'
+            })
+            // Then error should be null
+            expect(result.error).to.be.null
+        })
     })
 })

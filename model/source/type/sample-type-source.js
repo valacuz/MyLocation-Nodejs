@@ -1,3 +1,4 @@
+const uuidv4 = require('uuid/v4')
 const TypeSource = function () { }
 
 var types = []
@@ -17,15 +18,16 @@ TypeSource.prototype.getTypeById = (id) => {
 
 TypeSource.prototype.addType = (type) => {
     return new Promise((resolve, reject) => {
+        type.type_id = uuidv4() // Insert or replace type_id with random UUID
         types.push(type)
         resolve(type)
     })
 }
 
-// TODO: Ensure this method works!
 TypeSource.prototype.addTypes = (newTypes) => {
     return new Promise((resolve, reject) => {
         for (var i = 0; i < newTypes.length; i++) {
+            newTypes[i].type_id = uuidv4()  // Insert ot replace type_id with random UUID
             types.push(newTypes[i])
         }
         resolve()

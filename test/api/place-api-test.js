@@ -50,20 +50,31 @@ describe('Places API', () => {
                 .post('/api/places')
                 .set('content-type', 'application/json')
                 .send(MULTIPLE_INSERT_PLACE[0])
-                .then(_ => {
+                .then(response => {
+                    // Insert or replace MULTIPLE_INSERT_PLACE[0].place_id with result place_id
+                    MULTIPLE_INSERT_PLACE[0].place_id = response.body.place_id
+                    // Insert next item to data source
                     return chai.request(server)
                         .post('/api/places')
                         .set('content-type', 'application/json')
                         .send(MULTIPLE_INSERT_PLACE[1])
                 })
-                .then(_ => {
+                .then(response => {
+                    // Insert or replace MULTIPLE_INSERT_PLACE[1].place_id with result place_id
+                    MULTIPLE_INSERT_PLACE[1].place_id = response.body.place_id
+                    // Insert next item to data source
                     return chai.request(server)
                         .post('/api/places')
                         .set('content-type', 'application/json')
                         .send(MULTIPLE_INSERT_PLACE[2])
                 })
                 // When retrieve all places
-                .then(_ => { return chai.request(server).get('/api/places') })
+                .then(response => {
+                    // Insert or replace MULTIPLE_INSERT_PLACE[2].place_id with result place_id
+                    MULTIPLE_INSERT_PLACE[2].place_id = response.body.place_id
+                    // Insert next item to data source
+                    return chai.request(server).get('/api/places')
+                })
                 .then(response => {
                     // Then service should return status code 200 (OK)
                     expect(response).to.have.status(200)
@@ -82,6 +93,7 @@ describe('Places API', () => {
                 .catch(err => done(err))
         })
         it('Should create place and get status 201 when post object in correct form', (done) => {
+            var insertPlaceId
             chai.request(server)
                 .post('/api/places')
                 .set('content-type', 'application/json')
@@ -91,17 +103,21 @@ describe('Places API', () => {
                     expect(response).to.have.status(201)
                     // And header content type should be `application/json`
                     expect(response).to.be.json
+                    // Store place_id from response
+                    insertPlaceId = response.body.place_id
                     // And header field `location` should return id
-                    expect(response).to.have.header('location', `/places/${SINGLE_INSERT_PLACE.place_id}`)
+                    expect(response).to.have.header('location', `/places/${insertPlaceId}`)
                     // To proof data was stored, try to query it
                     return chai.request(server)
-                        .get(`/api/places/${SINGLE_INSERT_PLACE.place_id}`)
+                        .get(`/api/places/${insertPlaceId}`)
                 })
                 .then(response => {
                     // Then service should return status code 200 (OK)
                     expect(response).to.have.status(200)
                     // And content type should be `application/json`
                     expect(response).to.be.json
+                    // Insert or replace place_id with stored place_id
+                    SINGLE_INSERT_PLACE.place_id = insertPlaceId
                     // Compare by deep equal to traverse the objects and compare nested properties
                     expect(response.body).to.deep.equal(SINGLE_INSERT_PLACE)
                     // Mark as completed
@@ -138,6 +154,7 @@ describe('Places API', () => {
                 .end((_, response) => expect(response).to.have.status(401))
         })
         it('Should update place and get status 200 when update object in correct form', (done) => {
+            var insertPlaceId   // To store place_id
             chai.request(server)
                 // Given a place and add to data source
                 .post('/api/places')
@@ -146,9 +163,13 @@ describe('Places API', () => {
                 .then(response => {
                     // And it must create successfully.
                     expect(response).to.have.status(201)
+                    // Store place_id from response to variable
+                    insertPlaceId = response.body.place_id
+                    // Insert or replace place_id with variable
+                    AFTER_UPDATE_PLACE.place_id = insertPlaceId
                     // When update place
                     return chai.request(server)
-                        .put(`/api/places/${AFTER_UPDATE_PLACE.place_id}`)
+                        .put(`/api/places/${insertPlaceId}`)
                         .set('content-type', 'application/json')
                         .send(AFTER_UPDATE_PLACE)
                 })
@@ -157,7 +178,7 @@ describe('Places API', () => {
                     expect(response).to.have.status(200)
                     // To proof data was updated, try to query it
                     return chai.request(server)
-                        .get(`/api/places/${AFTER_UPDATE_PLACE.place_id}`)
+                        .get(`/api/places/${insertPlaceId}`)
                 })
                 .then(response => {
                     // Then service should return status code 200 (OK)
@@ -178,6 +199,7 @@ describe('Places API', () => {
 
     describe('Delete', () => {
         it('Should delete place and get status 204 from given place_id', (done) => {
+            var insertPlaceId   // To store place_id
             chai.request(server)
                 // Given a place and add to data source
                 .post('/api/places')
@@ -186,16 +208,18 @@ describe('Places API', () => {
                 .then(response => {
                     // And it must create successfully
                     expect(response).to.have.status(201)
+                    // Store place_id from response to variable
+                    insertPlaceId = response.body.place_id
                     // When delete place type by type_id
                     return chai.request(server)
-                        .del(`/api/places/${SINGLE_DELETE_PLACE.place_id}`)
+                        .del(`/api/places/${insertPlaceId}`)
                 })
                 .then(response => {
                     // Then service should return status code 204 (no Content)
                     expect(response).to.have.status(204)
                     // To proof data was deleted, try to query it
                     return chai.request(server)
-                        .get(`/api/places/${SINGLE_DELETE_PLACE.place_id}`)
+                        .get(`/api/places/${insertPlaceId}`)
                 })
                 .then(response => {
                     // Then service should return status code 404 (not found)
@@ -224,7 +248,6 @@ describe('Places API', () => {
 
 // Sample data
 const SINGLE_INSERT_PLACE = {
-    place_id: 'db5b7f1b-7902-4e88-8552-c80f555d5826',
     place_type: '771bf245-830a-41a4-b0db-76d72c240f46',
     place_name: 'Wong Wain Yai',
     place_latitude: 13.7263991,
@@ -234,7 +257,6 @@ const SINGLE_INSERT_PLACE = {
 }
 const MULTIPLE_INSERT_PLACE = [
     {
-        place_id: 'aea9e4a1-efa5-478c-9fe2-4f3a6608225f',
         place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
         place_name: 'The Berkeley Hotel Pratunam',
         place_latitude: 13.7401668,
@@ -243,7 +265,6 @@ const MULTIPLE_INSERT_PLACE = [
         picture_url: null
     },
     {
-        place_id: '31e0bfd8-0aa5-4287-821b-4fc3de7fc999',
         place_type: '77527cb3-4b4c-4557-8dba-fc9fefcf6909',
         place_name: 'Traimudomsuksa',
         place_latitude: 13.7401668,
@@ -252,7 +273,6 @@ const MULTIPLE_INSERT_PLACE = [
         picture_url: null
     },
     {
-        place_id: '6debce55-fd7a-40e8-9d18-a450a1e9f79d',
         place_type: '771bf245-830a-41a4-b0db-76d72c240f46',
         place_name: 'Redsun siam square',
         place_latitude: 13.7446608,
@@ -263,7 +283,6 @@ const MULTIPLE_INSERT_PLACE = [
 ]
 
 const BEFORE_UPDATE_PLACE = {
-    place_id: '60136c9c-c000-4506-bc5c-f35d6d0d6de6',
     place_type: '7de84da2-fb05-4191-ac2c-b30951e7d0a5',
     place_name: 'Paragon Cineplex',
     place_latitude: 13.7429416,
@@ -272,7 +291,6 @@ const BEFORE_UPDATE_PLACE = {
     picture_url: null
 }
 const AFTER_UPDATE_PLACE = {
-    place_id: '60136c9c-c000-4506-bc5c-f35d6d0d6de6',
     place_type: '7de84da2-fb05-4191-ac2c-b30951e7d0a5',
     place_name: 'Tokyu',
     place_latitude: 13.7453518,
@@ -282,7 +300,6 @@ const AFTER_UPDATE_PLACE = {
 }
 
 const SINGLE_DELETE_PLACE = {
-    place_id: '9e97c582-b96b-4f05-810e-d13dfdaf64bd',
     place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
     place_name: 'Jim Thompson House',
     place_latitude: 13.7449958,

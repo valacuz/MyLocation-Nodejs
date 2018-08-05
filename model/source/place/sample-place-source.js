@@ -1,3 +1,4 @@
+const uuidv4 = require('uuid/v4')
 const PlaceSource = function () { }
 
 var places = []
@@ -17,6 +18,7 @@ PlaceSource.prototype.getPlaceById = (id) => {
 
 PlaceSource.prototype.addPlace = (place) => {
     return new Promise((resolve, reject) => {
+        place.place_id = uuidv4()   // Insert or replace place_id with UUID
         places.push(place)
         resolve(place)
     })
