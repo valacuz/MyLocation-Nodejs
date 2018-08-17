@@ -1,11 +1,19 @@
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const server = require('./../../app')
+const TypeSource = require('./../../model/source/type')
+
 const expect = chai.expect
+const timeout = 15000   // 15 Seconds
 
 chai.use(chaiHttp)
 
 describe('Place types API', () => {
+
+    before(() => {
+        // Clean up data source before unit test starts
+        new TypeSource().clear()
+    })
 
     describe('Read', () => {
         it('Should not get any type when given type_id which not exists', () => {
@@ -101,7 +109,7 @@ describe('Place types API', () => {
                     done()
                 })
                 .catch(err => done(err))
-        })
+        }).timeout(timeout)
         it('Should create place type when post object in correct form', (done) => {
             var insertTypeId    // To store type_id
             chai.request(server)
@@ -135,7 +143,7 @@ describe('Place types API', () => {
                     done()
                 })
                 .catch(err => done(err))
-        })
+        }).timeout(timeout)
     })
 
     describe('Update', () => {
@@ -206,7 +214,7 @@ describe('Place types API', () => {
                     done()
                 })
                 .catch(err => done(err))
-        })
+        }).timeout(timeout)
     })
 
     describe('Delete', () => {
@@ -227,6 +235,7 @@ describe('Place types API', () => {
                         .del(`/api/types/${insertTypeId}`)
                 })
                 .then(response => {
+                    console.log(insertTypeId)
                     // Then service should return status code 204 (no content)
                     expect(response).to.have.status(204)
                     // To proof data was deleted, try to query it
@@ -240,7 +249,7 @@ describe('Place types API', () => {
                     done()
                 })
                 .catch(err => done(err))
-        })
+        }).timeout(timeout)
         it('Should not delete type and get status 404 when type_id is not provided', () => {
             chai.request(server)
                 // When delete place type by not provide type_id

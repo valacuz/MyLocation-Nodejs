@@ -1,1 +1,1 @@
-module.exports = require('./sample-type-source')
+module.exports = require('./mongo-type-source')
