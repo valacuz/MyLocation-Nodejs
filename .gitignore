@@ -17,3 +17,6 @@ node_modules
 
 # coverage report
 coverage
+
+# project local config
+config/local-config.js
