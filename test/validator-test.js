@@ -63,59 +63,59 @@ describe('Test Validator class', () => {
             expect(result.error).to.be.an('error')
             expect(result.error.details[0].path[0]).to.be.equals('place_type')
         })
-        it('Should error when place_latitude is less than -90', () => {
+        it('Should error when latitude is less than -90', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
                 place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
-                place_latitude: -90.005
+                latitude: -90.005
             })
-            // Then validation should be failed on field `place_latitude`
+            // Then validation should be failed on field `latitude`
             expect(result.error).to.be.an('error')
-            expect(result.error.details[0].path[0]).to.be.equals('place_latitude')
+            expect(result.error.details[0].path[0]).to.be.equals('latitude')
         })
-        it('Should error when place_latitude is more than 90', () => {
+        it('Should error when latitude is more than 90', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
                 place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
-                place_latitude: 90.005
+                latitude: 90.005
             })
-            // Then validation should be failed on field `place_latitude`
+            // Then validation should be failed on field `latitude`
             expect(result.error).to.be.an('error')
-            expect(result.error.details[0].path[0]).to.be.equals('place_latitude')
+            expect(result.error.details[0].path[0]).to.be.equals('latitude')
         })
-        it('Should error when place_longitude is less than -180', () => {
+        it('Should error when longitude is less than -180', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
                 place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
-                place_latitude: 13.549,
-                place_longitude: -180.005,
+                latitude: 13.549,
+                longitude: -180.005,
             })
-            // Then validation should be failed on field `place_longitude`
+            // Then validation should be failed on field `longitude`
             expect(result.error).to.be.an('error')
-            expect(result.error.details[0].path[0]).to.be.equals('place_longitude')
+            expect(result.error.details[0].path[0]).to.be.equals('longitude')
         })
-        it('Should error when place_longitude is more than 180', () => {
+        it('Should error when longitude is more than 180', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
                 place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
-                place_latitude: 13.549,
-                place_longitude: 180.005,
+                latitude: 13.549,
+                longitude: 180.005,
             })
-            // Then validation should be failed on field `place_longitude`
+            // Then validation should be failed on field `longitude`
             expect(result.error).to.be.an('error')
-            expect(result.error.details[0].path[0]).to.be.equals('place_longitude')
+            expect(result.error.details[0].path[0]).to.be.equals('longitude')
         })
         it('Should error when starred is null', () => {
             const result = new Validator().validatePlace({
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
                 place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
-                place_latitude: 13.549,
-                place_longitude: 100.182,
+                latitude: 13.549,
+                longitude: 100.182,
                 starred: null
             })
             // Then validation should be failed on field `starred`
@@ -127,8 +127,8 @@ describe('Test Validator class', () => {
                 place_id: '543c8760-8572-443d-93dd-6498b2256aca',
                 place_name: 'Sample place',
                 place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
-                place_latitude: 13.549,
-                place_longitude: 100.182,
+                latitude: 13.549,
+                longitude: 100.182,
                 starred: false,
                 picture_url: null
             })
