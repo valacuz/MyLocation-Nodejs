@@ -1,11 +1,19 @@
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const server = require('./../../app')
+const PlaceSource = require('./../../model/source/place')
+
 const expect = chai.expect
+const timeout = 15000    // 15 Seconds
 
 chai.use(chaiHttp)
 
 describe('Places API', () => {
+
+    before(() => {
+        // Clean up data source before unit test starts
+        new PlaceSource().clearAll()
+    })
 
     describe('Read', () => {
         it('Should not get any place when given place_id which not exists', () => {
@@ -26,6 +34,7 @@ describe('Places API', () => {
                 // Then service should return status code 400 (bad request)
                 .end((_, response) => expect(response).to.have.status(400))
         })
+
         it('Should not create place and get status 400 when content type is not application/json', () => {
             chai.request(server)
                 // When try to create place with json string
@@ -35,6 +44,7 @@ describe('Places API', () => {
                 // Then service should return status code 400 (bad request)
                 .end((_, response) => expect(response).to.have.status(400))
         })
+
         it('Should not create place and get status 404 when post with place_id in queryString', () => {
             chai.request(server)
                 // When try to create place at wrong url
@@ -44,6 +54,7 @@ describe('Places API', () => {
                 // Then service should return status code 404 (not found)
                 .end((_, response) => expect(response).to.have.status(404))
         })
+
         it('Should retrieve all place in data source', (done) => {
             // Given 3 place in data source
             chai.request(server)
@@ -91,7 +102,8 @@ describe('Places API', () => {
                     done()
                 })
                 .catch(err => done(err))
-        })
+        }).timeout(timeout)
+
         it('Should create place and get status 201 when post object in correct form', (done) => {
             var insertPlaceId
             chai.request(server)
@@ -124,7 +136,7 @@ describe('Places API', () => {
                     done()
                 })
                 .catch(err => done(err))
-        })
+        }).timeout(timeout)
     })
 
     describe('Update', () => {
@@ -137,6 +149,7 @@ describe('Places API', () => {
                 // Then service should return status code 404 (not found)
                 .end((_, response) => expect(response).to.have.status(404))
         })
+
         it('Should not update place and get status 400 when query string and object place_id is not same', () => {
             chai.request(server)
                 .put(`/api/places/${SAMPLE_NOT_EXISTS_PLACE.place_id}`)
@@ -145,6 +158,7 @@ describe('Places API', () => {
                 // Then service should return status code 400 (bad request)
                 .end((_, response) => expect(response).to.have.status(400))
         })
+
         it('Should not update place and get status 401 when place_id is not exists in data source', () => {
             chai.request(server)
                 .put(`/api/places/${SAMPLE_NOT_EXISTS_PLACE.place_id}`)
@@ -153,6 +167,7 @@ describe('Places API', () => {
                 // Then service should return status code 401 (unauthorized)
                 .end((_, response) => expect(response).to.have.status(401))
         })
+
         it('Should update place and get status 200 when update object in correct form', (done) => {
             var insertPlaceId   // To store place_id
             chai.request(server)
@@ -194,7 +209,7 @@ describe('Places API', () => {
                     done()
                 })
                 .catch(err => done(err))
-        })
+        }).timeout(timeout)
     })
 
     describe('Delete', () => {
@@ -228,7 +243,8 @@ describe('Places API', () => {
                     done()
                 })
                 .catch(err => done(err))
-        })
+        }).timeout(timeout)
+
         it('Should not delete place and get status 404 when place_id is not provided', () => {
             chai.request(server)
                 // When delete place by not provide place_id
@@ -236,6 +252,7 @@ describe('Places API', () => {
                 // Then service should return status code 404 (not found)
                 .end((_, response) => expect(response).to.have.status(404))
         })
+
         it('Should not delete place and get status 401 when given place_id which not exists', () => {
             chai.request(server)
                 // When delete place by place_id which not exists in data source
@@ -248,71 +265,71 @@ describe('Places API', () => {
 
 // Sample data
 const SINGLE_INSERT_PLACE = {
-    place_type: '771bf245-830a-41a4-b0db-76d72c240f46',
+    place_type: '5b77f249e7179a69ea6109ad',
     place_name: 'Wong Wain Yai',
-    place_latitude: 13.7263991,
-    place_longitude: 100.4843742,
+    latitude: 13.7263991,
+    longitude: 100.4843742,
     starred: false,
     picture_url: null
 }
 const MULTIPLE_INSERT_PLACE = [
     {
-        place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
+        place_type: '5b77f249e7179a69ea6109ad',
         place_name: 'The Berkeley Hotel Pratunam',
-        place_latitude: 13.7401668,
-        place_longitude: 100.5265844,
+        latitude: 13.7401668,
+        longitude: 100.5265844,
         starred: false,
         picture_url: null
     },
     {
-        place_type: '77527cb3-4b4c-4557-8dba-fc9fefcf6909',
+        place_type: '5b77f249e7179a69ea6109ad',
         place_name: 'Traimudomsuksa',
-        place_latitude: 13.7401668,
-        place_longitude: 100.5265844,
+        latitude: 13.7401668,
+        longitude: 100.5265844,
         starred: true,
         picture_url: null
     },
     {
-        place_type: '771bf245-830a-41a4-b0db-76d72c240f46',
+        place_type: '5b77f249e7179a69ea6109ad',
         place_name: 'Redsun siam square',
-        place_latitude: 13.7446608,
-        place_longitude: 100.5304822,
+        latitude: 13.7446608,
+        longitude: 100.5304822,
         starred: false,
         picture_url: null
     }
 ]
 
 const BEFORE_UPDATE_PLACE = {
-    place_type: '7de84da2-fb05-4191-ac2c-b30951e7d0a5',
+    place_type: '5b77f249e7179a69ea6109ad',
     place_name: 'Paragon Cineplex',
-    place_latitude: 13.7429416,
-    place_longitude: 100.4196499,
+    latitude: 13.7429416,
+    longitude: 100.4196499,
     starred: true,
     picture_url: null
 }
 const AFTER_UPDATE_PLACE = {
-    place_type: '7de84da2-fb05-4191-ac2c-b30951e7d0a5',
+    place_type: '5b77f249e7179a69ea6109ad',
     place_name: 'Tokyu',
-    place_latitude: 13.7453518,
-    place_longitude: 100.5286679,
+    latitude: 13.7453518,
+    longitude: 100.5286679,
     starred: false,
     picture_url: null
 }
 
 const SINGLE_DELETE_PLACE = {
-    place_type: '7129d2b1-a38c-4e9c-a13c-7890a9a37cb4',
+    place_type: '5b77f249e7179a69ea6109ad',
     place_name: 'Jim Thompson House',
-    place_latitude: 13.7449958,
-    place_longitude: 100.5281137,
+    latitude: 13.7449958,
+    longitude: 100.5281137,
     starred: true,
     picture_url: null
 }
 const SAMPLE_NOT_EXISTS_PLACE = {
     place_id: '47d6723e-b424-4265-ba1f-3e898341ffaa',
-    place_type: '7de84da2-fb05-4191-ac2c-b30951e7d0a5',
+    place_type: '5b77f249e7179a69ea6109ad',
     place_name: 'Central World',
-    place_latitude: 13.7465389,
-    place_longitude: 100.5371731,
+    latitude: 13.7465389,
+    longitude: 100.5371731,
     starred: false,
     picture_url: null
 }

@@ -24,16 +24,6 @@ TypeSource.prototype.addType = (type) => {
     })
 }
 
-TypeSource.prototype.addTypes = (newTypes) => {
-    return new Promise((resolve, reject) => {
-        for (var i = 0; i < newTypes.length; i++) {
-            newTypes[i].type_id = uuidv4()  // Insert ot replace type_id with random UUID
-            types.push(newTypes[i])
-        }
-        resolve()
-    })
-}
-
 TypeSource.prototype.updateType = (type) => {
     return new Promise((resolve, reject) => {
         var index = types.findIndex((item) => item.type_id == type.type_id)
@@ -62,7 +52,7 @@ TypeSource.prototype.deleteType = (id) => {
     })
 }
 
-TypeSource.prototype.clear = () => {
+TypeSource.prototype.clearAll = () => {
     return new Promise((resolve, reject) => {
         types = []
         resolve()

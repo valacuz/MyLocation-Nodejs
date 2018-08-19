@@ -12,7 +12,7 @@ describe('Place types API', () => {
 
     before(() => {
         // Clean up data source before unit test starts
-        new TypeSource().clear()
+        new TypeSource().clearAll()
     })
 
     describe('Read', () => {
@@ -34,6 +34,7 @@ describe('Place types API', () => {
                 // Then service should return status code 400 (bad request)
                 .end((_, response) => expect(response).to.have.status(400))
         })
+
         it('Should not create type and get status 400 when content type is not application/json', () => {
             chai.request(server)
                 // When try to create place type with json string
@@ -43,6 +44,7 @@ describe('Place types API', () => {
                 // Then service should return status code 400 (bad request)
                 .end((_, response) => expect(response).to.have.status(400))
         })
+
         it('Should not create type and get status 404 when post type_id in queryString', () => {
             chai.request(server)
                 // When try to create place at wrong url
@@ -52,6 +54,7 @@ describe('Place types API', () => {
                 // Then service should return status code 404 (not found)
                 .end((_, response) => expect(response).to.have.status(404))
         })
+
         it('Should retrieve all place types in data source', (done) => {
             // Given 4 place types in data source
             chai.request(server)
@@ -110,6 +113,7 @@ describe('Place types API', () => {
                 })
                 .catch(err => done(err))
         }).timeout(timeout)
+
         it('Should create place type when post object in correct form', (done) => {
             var insertTypeId    // To store type_id
             chai.request(server)
@@ -156,6 +160,7 @@ describe('Place types API', () => {
                 // Then service should return status code 404 (not found)
                 .end((_, response) => expect(response).to.have.status(404))
         })
+
         it('Should not update type and get status 400 when query string and object type_id is not same', () => {
             chai.request(server)
                 .put(`/api/types/${SAMPLE_NOT_EXISTS_TYPE.type_id}`)
@@ -164,6 +169,7 @@ describe('Place types API', () => {
                 // Then service should return status code 400 (bad request)
                 .end((_, response) => expect(response).to.have.status(400))
         })
+
         it('Should not update type and get status 401 when type_id is not exists in data source', () => {
             chai.request(server)
                 .put(`/api/types/${SAMPLE_NOT_EXISTS_TYPE.type_id}`)
@@ -172,6 +178,7 @@ describe('Place types API', () => {
                 // Then service should retrun status code 401 (unauthorized)
                 .end((_, response) => expect(response).to.have.status(401))
         })
+
         it('Should update type and get status 200 when update type in correct form', (done) => {
             var insertTypeId    // To store type_id
             chai.request(server)
@@ -235,7 +242,6 @@ describe('Place types API', () => {
                         .del(`/api/types/${insertTypeId}`)
                 })
                 .then(response => {
-                    console.log(insertTypeId)
                     // Then service should return status code 204 (no content)
                     expect(response).to.have.status(204)
                     // To proof data was deleted, try to query it
@@ -250,6 +256,7 @@ describe('Place types API', () => {
                 })
                 .catch(err => done(err))
         }).timeout(timeout)
+
         it('Should not delete type and get status 404 when type_id is not provided', () => {
             chai.request(server)
                 // When delete place type by not provide type_id
@@ -257,6 +264,7 @@ describe('Place types API', () => {
                 // Then service should return status code 404 (not found)
                 .end((_, response) => expect(response).to.have.status(404))
         })
+
         it('Should not delete type and get status 401 when given type_id which not exists', () => {
             chai.request(server)
                 // When delete place type by type_id which not exists in data source

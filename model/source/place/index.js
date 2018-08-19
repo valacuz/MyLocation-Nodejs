@@ -1,1 +1,1 @@
-module.exports = require('./sample-place-source')
+module.exports = require('./mongo-place-source')

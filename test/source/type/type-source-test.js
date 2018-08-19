@@ -6,7 +6,7 @@ describe('PlaceTypeSource', () => {
     beforeEach(() => {
         // Clear all data for each test case.
         const typeSource = new TypeSource()
-        typeSource.clear()
+        typeSource.clearAll()
     })
 
     it('Should not success to retrieve place type by not exists type_id', (done) => {
@@ -23,6 +23,7 @@ describe('PlaceTypeSource', () => {
             })
             .catch(err => done(err))
     })
+
     it('Should not success to retrieve place type by undefined type_id', (done) => {
         const typeSource = new TypeSource()
         // Given a place type and add to data source
@@ -37,6 +38,7 @@ describe('PlaceTypeSource', () => {
             })
             .catch(err => done(err))
     })
+
     it('Should success to retrieve place type which just added to data source', (done) => {
         const typeSource = new TypeSource()
         // Given a place type and add to data source
@@ -51,20 +53,31 @@ describe('PlaceTypeSource', () => {
             })
             .catch(err => done(err))
     })
-    it('Should success to retrieve all 3 place types which added to data source', (done) => {
+
+    it('Should success to retrieve all place types which added to data source', (done) => {
         const typeSource = new TypeSource()
         // Given an array of place type and add to data source
-        typeSource.addTypes(SAMPLE_TYPES)
+        typeSource.addType(SAMPLE_TYPES[0])
+            .then(_ => typeSource.addType(SAMPLE_TYPES[1]))
+            .then(_ => typeSource.addType(SAMPLE_TYPES[2]))
+            .then(_ => typeSource.addType(SAMPLE_TYPES[3]))
             // When retrieve all types from data source
             .then(_ => typeSource.getTypes())
             // Then the number of types should be equals to size of array `SAMPLE_PLACE`
             .then(types => {
+                // Assert length of array
                 expect(types).to.have.lengthOf(SAMPLE_TYPES.length)
+                // Assert on each element
+                expect(types[0]).to.deep.equals(SAMPLE_TYPES[0])
+                expect(types[1]).to.deep.equals(SAMPLE_TYPES[1])
+                expect(types[2]).to.deep.equals(SAMPLE_TYPES[2])
+                expect(types[3]).to.deep.equals(SAMPLE_TYPES[3])
                 // Mark as done
                 done()
             })
             .catch(err => done(err))
     })
+
     it('update place type then data should be updated', (done) => {
         const typeSource = new TypeSource()
         var newTypeId
@@ -77,7 +90,7 @@ describe('PlaceTypeSource', () => {
                 typeSource.updateType(newType)
             })
             // And retrieve updated type by type_id from data source
-            .then(() => typeSource.getTypeById(newTypeId))
+            .then(_ => typeSource.getTypeById(newTypeId))
             // Then type attributes should be updated
             .then(type => {
                 expect(type).to.have.property('type_name', SAMPLE_TYPES[2].type_name)
@@ -86,11 +99,13 @@ describe('PlaceTypeSource', () => {
             })
             .catch(err => done(err))
     })
+
     it('update place type by type_id which not exists should be error', () => {
         const typeSource = new TypeSource()
         typeSource.updateType(SAMPLE_TYPES[3])
             .catch(err => expect(err).to.be.an('error'))
     })
+
     it('delete place type then data should not be retrieved', () => {
         const typeSource = new TypeSource()
         var newTypeId
@@ -102,9 +117,10 @@ describe('PlaceTypeSource', () => {
                 typeSource.deleteType(type.type_id)
             })
             // Then type should not be retrieved from data source
-            .then(() => typeSource.getTypeById(newTypeId))
+            .then(_ => typeSource.getTypeById(newTypeId))
             .catch(err => expect(err).to.be.an('error'))
     })
+
     it('delete place type by type_id which not exists should be error', () => {
         const typeSource = new TypeSource()
         typeSource.deleteType(SAMPLE_TYPES[3].type_id)

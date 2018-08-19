@@ -26,13 +26,9 @@ TypeSource.prototype.getTypeById = (id) => {
 }
 
 TypeSource.prototype.addType = (type) => {
-    var placeType = new PlaceType(type)
-    return placeType.save()
-        .then(() => placeType.toResponseJson())
-}
-
-TypeSource.prototype.addTypes = (types) => {
-    return PlaceType.insertMany(types).exec()
+    const newType = new PlaceType(type)
+    return newType.save()
+        .then(() => newType.toResponseJson())
 }
 
 TypeSource.prototype.updateType = (type) => {
@@ -43,7 +39,7 @@ TypeSource.prototype.deleteType = (id) => {
     return PlaceType.findByIdAndRemove(id).exec()
 }
 
-TypeSource.prototype.clear = () => {
+TypeSource.prototype.clearAll = () => {
     return PlaceType.remove().exec()
 }
 

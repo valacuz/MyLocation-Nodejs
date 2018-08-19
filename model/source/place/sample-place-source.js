@@ -9,6 +9,12 @@ PlaceSource.prototype.getPlaces = () => {
     })
 }
 
+PlaceSource.prototype.getPlacesWithOffset = (limit, offset) => {
+    return new Promise((resolve, reject) => {
+        resolve(places.slice(offset, offset + limit))
+    })
+}
+
 PlaceSource.prototype.getPlaceById = (id) => {
     return new Promise((resolve, reject) => {
         const place = places.find(item => item.place_id === id)
@@ -52,7 +58,7 @@ PlaceSource.prototype.deletePlace = (id) => {
     })
 }
 
-PlaceSource.prototype.clear = () => {
+PlaceSource.prototype.clearAll = () => {
     return new Promise((resolve, reject) => {
         places = []
         resolve()
