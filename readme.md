@@ -9,6 +9,7 @@ A practicing web services project written on node.js + expressjs contains CRUD o
     - [body-parser](https://github.com/expressjs/body-parser) - Node.js body parsing middleware
     - [joijs](https://github.com/hapijs/joi) - Object schema description language and validator for javascript objects.
     - [helmetjs](https://github.com/helmetjs/helmet) - A collection of middleware functions to help security headers for express.js
+    - [mongoose](http://mongoosejs.com/) - mongodb object model for node.js
 
 - Testing
     - [mocha](https://mochajs.org) - Javascript testing framework for node.js
@@ -26,6 +27,5 @@ A practicing web services project written on node.js + expressjs contains CRUD o
 - `test` - This folder contains test script.
 
 ## Future implmentation
-- Database (MongoDB with mongoose)
 - Authentication or Token (JWT)
 - API References (Swagger)
