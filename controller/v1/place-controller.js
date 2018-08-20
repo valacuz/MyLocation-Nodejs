@@ -5,9 +5,18 @@ const CONTENT_TYPE_JSON = 'application/json'
 
 const PlaceController = function () { }
 
-PlaceController.prototype.getPlaces = (_, response) => {
+PlaceController.prototype.getPlaces = (request, response) => {
+    var offset = 0
+    var limit = 20
+
+    if (request.query.offset !== undefined) {
+        offset = Number(request.query.offset)
+    }
+    if (request.query.limit !== undefined) {
+        limit = Number(request.query.limit)
+    }
     const placeSource = new PlaceSource()
-    placeSource.getPlaces()
+    placeSource.getPlaces(offset, limit)
         .then(places => response.json(places))
         .catch(() => response.sendStatus(503))
 }

@@ -3,12 +3,7 @@ const objectId = require('mongodb').ObjectID
 const Place = mongoose.model('Place')
 const PlaceSource = function () { }
 
-PlaceSource.prototype.getPlaces = () => {
-    return Place.find().exec()
-        .then(places => places.map(place => place.toResponseJson()))
-}
-
-PlaceSource.prototype.getPlacesWithOffset = (limit, offset) => {
+PlaceSource.prototype.getPlaces = (offset, limit) => {
     return Place.find().skip(offset).limit(limit).exec()
         .then(places => places.map(place => place.toResponseJson()))
 }

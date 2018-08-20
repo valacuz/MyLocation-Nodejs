@@ -3,13 +3,7 @@ const PlaceSource = function () { }
 
 var places = []
 
-PlaceSource.prototype.getPlaces = () => {
-    return new Promise((resolve, reject) => {
-        resolve(places)
-    })
-}
-
-PlaceSource.prototype.getPlacesWithOffset = (limit, offset) => {
+PlaceSource.prototype.getPlaces = (offset, limit) => {
     return new Promise((resolve, reject) => {
         resolve(places.slice(offset, offset + limit))
     })

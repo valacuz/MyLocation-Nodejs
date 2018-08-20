@@ -35,36 +35,41 @@ describe('PlaceSource', () => {
             .then(retrievePlace => expect(retrievePlace).to.deep.equal(SAMPLE_PLACE[0]))
     })
 
-    it('Should retrieve both two places after added them to data source', () => {
+    it('Should retrieve both two places after added them to data source', (done) => {
         const placeSource = new PlaceSource()
         // Given 2 new place to data source
         placeSource.addPlace(SAMPLE_PLACE[0])
             .then(_ => placeSource.addPlace(SAMPLE_PLACE[1]))
             // When retrieve all places from data source
-            .then(_ => placeSource.getPlaces())
+            .then(_ => placeSource.getPlaces(0, 20))
             // Then the number of places should be 2
             .then(places => {
                 expect(places).to.have.lengthOf(2)
                 // All retrieved places must be equals to items add to data source
                 expect(places[0]).to.deep.equal(SAMPLE_PLACE[0])
                 expect(places[1]).to.deep.equal(SAMPLE_PLACE[1])
+                // Mark as done
+                done()
             })
+            .catch(err => done(err))
     })
 
     it('Should retrieve place by offset and limit', () => {
+        const offset = 1
+        const limit = 2
         const placeSource = new PlaceSource()
         // Given 2 new place to data source
         placeSource.addPlace(SAMPLE_PLACE[0])
             .then(_ => placeSource.addPlace(SAMPLE_PLACE[1]))
             .then(_ => placeSource.addPlace(SAMPLE_PLACE[2]))
             .then(_ => placeSource.addPlace(SAMPLE_PLACE[3]))
-            // When retrieve place from data source by offset is 1 and limit is 2
-            .then(_ => placeSource.getPlacesWithOffset(1, 2))
-            // Then the number of places should be 2
+            // When retrieve place from data source by offset and limit
+            .then(_ => placeSource.getPlaces(offset, limit))
+            // Then the number of places should be equals to limit
             .then(places => {
-                expect(places).to.have.lengthOf(2)
-                expect(places[0]).to.deep.equal(SAMPLE_PLACE[1])
-                expect(places[1]).to.deep.equal(SAMPLE_PLACE[2])
+                expect(places).to.have.lengthOf(limit)
+                expect(places[0]).to.deep.equal(SAMPLE_PLACE[0 + offset])
+                expect(places[1]).to.deep.equal(SAMPLE_PLACE[1 + offset])
             })
     })
 

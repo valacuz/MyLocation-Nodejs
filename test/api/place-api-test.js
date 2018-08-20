@@ -10,7 +10,7 @@ chai.use(chaiHttp)
 
 describe('Places API', () => {
 
-    before(() => {
+    after(() => {
         // Clean up data source before unit test starts
         new PlaceSource().clearAll()
     })
@@ -56,11 +56,15 @@ describe('Places API', () => {
         })
 
         it('Should retrieve all place in data source', (done) => {
-            // Given 3 place in data source
-            chai.request(server)
-                .post('/api/places')
-                .set('content-type', 'application/json')
-                .send(MULTIPLE_INSERT_PLACE[0])
+            // Clear all current data before run this case
+            new PlaceSource().clearAll()
+                .then(() => {
+                    // Given 3 place in data source
+                    return chai.request(server)
+                        .post('/api/places')
+                        .set('content-type', 'application/json')
+                        .send(MULTIPLE_INSERT_PLACE[0])
+                })
                 .then(response => {
                     // Insert or replace MULTIPLE_INSERT_PLACE[0].place_id with result place_id
                     MULTIPLE_INSERT_PLACE[0].place_id = response.body.place_id
@@ -98,6 +102,60 @@ describe('Places API', () => {
                     expect(body[0]).to.deep.equal(MULTIPLE_INSERT_PLACE[0])
                     expect(body[1]).to.deep.equal(MULTIPLE_INSERT_PLACE[1])
                     expect(body[2]).to.deep.equal(MULTIPLE_INSERT_PLACE[2])
+                    // Mark as complete
+                    done()
+                })
+                .catch(err => done(err))
+        }).timeout(timeout)
+
+        it('Should retrieve place by offset and limit', (done) => {
+            const offset = 1
+            const limit = 2
+            // Clear all current data before run this case
+            new PlaceSource().clearAll()
+                .then(() => {
+                    // Given 3 place in data source
+                    return chai.request(server)
+                        .post('/api/places')
+                        .set('content-type', 'application/json')
+                        .send(MULTIPLE_INSERT_PLACE[0])
+                })
+                .then(response => {
+                    // Insert or replace MULTIPLE_INSERT_PLACE[0].place_id with result place_id
+                    MULTIPLE_INSERT_PLACE[0].place_id = response.body.place_id
+                    // Insert next item to data source
+                    return chai.request(server)
+                        .post('/api/places')
+                        .set('content-type', 'application/json')
+                        .send(MULTIPLE_INSERT_PLACE[1])
+                })
+                .then(response => {
+                    // Insert or replace MULTIPLE_INSERT_PLACE[1].place_id with result place_id
+                    MULTIPLE_INSERT_PLACE[1].place_id = response.body.place_id
+                    // Insert next item to data source
+                    return chai.request(server)
+                        .post('/api/places')
+                        .set('content-type', 'application/json')
+                        .send(MULTIPLE_INSERT_PLACE[2])
+                })
+                // When retrieve all places
+                .then(response => {
+                    // Insert or replace MULTIPLE_INSERT_PLACE[2].place_id with result place_id
+                    MULTIPLE_INSERT_PLACE[2].place_id = response.body.place_id
+                    // Insert next item to data source
+                    return chai.request(server).get(`/api/places?offset=${offset}&limit=${limit}`)
+                })
+                .then(response => {
+                    // Then service should return status code 200 (OK)
+                    expect(response).to.have.status(200)
+                    // And content type should be `application/json`
+                    expect(response).to.be.json
+                    // And length should be equals to limit
+                    const body = response.body
+                    expect(body).to.have.lengthOf(2)
+                    // Compare places
+                    expect(body[0]).to.deep.equal(MULTIPLE_INSERT_PLACE[0 + offset])
+                    expect(body[1]).to.deep.equal(MULTIPLE_INSERT_PLACE[1 + offset])
                     // Mark as complete
                     done()
                 })
