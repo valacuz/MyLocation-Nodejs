@@ -10,7 +10,7 @@ chai.use(chaiHttp)
 
 describe('Place types API', () => {
 
-    before(() => {
+    after(() => {
         // Clean up data source before unit test starts
         new TypeSource().clearAll()
     })
