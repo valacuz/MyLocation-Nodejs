@@ -19,4 +19,4 @@ node_modules
 coverage
 
 # project local config
-config/local-config.js
+config/local-config.env
