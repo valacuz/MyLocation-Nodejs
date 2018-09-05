@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "test": "mocha test --recursive --exit",
+    "testapi": "mocha test/api --recursive --exit",
     "coverage": "nyc --reporter=lcov mocha test --recursive --exit",
     "coveralls": "npm run-script coverage && ./node_modules/coveralls/bin/coveralls.js < coverage/lcov.info"
   },
@@ -16,6 +17,7 @@
     "coveralls": "3.0.2",
     "env2": "^2.2.2",
     "express": "4.16.3",
+    "express-jwt": "^5.3.1",
     "helmet": "3.12.1",
     "joi": "13.4.0",
     "mocha": "5.2.0",
