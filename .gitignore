@@ -20,3 +20,4 @@ coverage
 
 # project local config
 config/local-config.env
+config/test/local-test-config.env
