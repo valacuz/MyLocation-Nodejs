@@ -10,6 +10,7 @@ A practicing web services project written on node.js + expressjs contains CRUD o
     - [joijs](https://github.com/hapijs/joi) - Object schema description language and validator for javascript objects.
     - [helmetjs](https://github.com/helmetjs/helmet) - A collection of middleware functions to help security headers for express.js
     - [mongoose](http://mongoosejs.com/) - mongodb object model for node.js
+    - [express-jwt](https://github.com/auth0/express-jwt) - Middleware that validates JsonWebTokens
 
 - Testing
     - [mocha](https://mochajs.org) - Javascript testing framework for node.js
@@ -17,6 +18,9 @@ A practicing web services project written on node.js + expressjs contains CRUD o
     - [chai-http](https://github.com/chaijs/chai-http) - HTTP integration testing for chai assertion
     - [istanbuljs](https://github.com/istanbuljs/nyc) - Javascript test coverage
     - [coveralls](https://github.com/nickmerwin/node-coveralls) - Great coverage reporting with cool badge 
+
+- Etc.
+    - [env2](https://github.com/dwyl/env2) - Environment variable loader
 
 ## Structure
 - `app.js` - The entry point to application. This file defines express server. It also requires `route` to handle request from clients.
@@ -27,5 +31,5 @@ A practicing web services project written on node.js + expressjs contains CRUD o
 - `test` - This folder contains test script.
 
 ## Future implmentation
-- Authentication or Token (JWT)
+- Upload picture to Amazon S3
 - API References (Swagger)
