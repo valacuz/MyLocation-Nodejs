@@ -11,13 +11,14 @@
     "coveralls": "npm run-script coverage && ./node_modules/coveralls/bin/coveralls.js < coverage/lcov.info"
   },
   "dependencies": {
+    "bcrypt": "3.0.0",
     "body-parser": "1.18.3",
     "chai": "4.1.2",
     "chai-http": "4.0.0",
     "coveralls": "3.0.2",
-    "env2": "^2.2.2",
+    "env2": "2.2.2",
     "express": "4.16.3",
-    "express-jwt": "^5.3.1",
+    "express-jwt": "5.3.1",
     "helmet": "3.12.1",
     "joi": "13.4.0",
     "mocha": "5.2.0",
