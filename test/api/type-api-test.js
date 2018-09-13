@@ -10,7 +10,7 @@ const timeout = 20000   // 20 Seconds
 chai.use(chaiHttp)
 
 describe('Place types API', () => {
-    after(() => {
+    before(() => {
         // Clean up data source before unit test starts
         new TypeSource().clearAll()
     })
@@ -98,12 +98,16 @@ describe('Place types API', () => {
         })
 
         it('Should retrieve all place types in data source', (done) => {
-            // Given 4 place types in data source
-            chai.request(server)
-                .post('/api/types')
-                .set('content-type', 'application/json')
-                .set('authorization', `Bearer ${config.adminTestToken}`)
-                .send(MULTIPLE_INSERT_TYPE[0])
+            // Clear all current place source
+            new TypeSource().clearAll()
+                .then(_ => {
+                    // Given 4 place types in data source
+                    return chai.request(server)
+                        .post('/api/types')
+                        .set('content-type', 'application/json')
+                        .set('authorization', `Bearer ${config.adminTestToken}`)
+                        .send(MULTIPLE_INSERT_TYPE[0])
+                })
                 .then(response => {
                     // Insert or replace MULTIPLE_INSERT_TYPE[0].type_id with result type_id
                     MULTIPLE_INSERT_TYPE[0].type_id = response.body.type_id
