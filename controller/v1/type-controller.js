@@ -1,4 +1,4 @@
-"use strict";
+"use strict"
 
 const TypeSource = require('./../../model/source/type')
 const UserSource = require('./../../model/source/user')
@@ -28,7 +28,7 @@ TypeController.prototype.getTypes = async (request, response) => {
         response.sendStatus(503)
         return
     }
-    // Query successful, response ok with json array of place types.
+    // query successful, response ok with json array of place types.
     response.json(types)
 }
 
@@ -44,7 +44,8 @@ TypeController.prototype.getTypeById = async (request, response) => {
         response.sendStatus(401)
         return
     }
-    var [err, type] = await to(typeSource.getTypeById(request.params.id))
+    const queryString = request.params
+    var [err, type] = await to(typeSource.getTypeById(queryString.id))
     if (err) {
         response.sendStatus(503)
         return
@@ -53,7 +54,7 @@ TypeController.prototype.getTypeById = async (request, response) => {
         response.sendStatus(404)
         return
     }
-    // Query successful, response ok with json of place type.
+    // query successful, response ok with json of place type.
     response.json(type)
 }
 
@@ -86,7 +87,7 @@ TypeController.prototype.addType = async (request, response) => {
         response.sendStatus(503)
         return
     }
-    // Creation successful, response created.
+    // creation successful, response created.
     response.status(201)
         .location(`/types/${newType.type_id}`)
         .contentType(CONTENT_TYPE_JSON)
@@ -132,7 +133,7 @@ TypeController.prototype.updateType = async (request, response) => {
         response.sendStatus(503)
         return
     }
-    // Updation successful, response ok.
+    // updation successful, response ok.
     response.sendStatus(200)
 }
 
@@ -151,7 +152,7 @@ TypeController.prototype.deleteType = async (request, response) => {
         response.sendStatus(403)
         return
     }
-    const queryString = request.params;
+    const queryString = request.params
     var [err, type] = await to(typeSource.getTypeById(queryString.id))
     if (err) {
         response.sendStatus(503)
