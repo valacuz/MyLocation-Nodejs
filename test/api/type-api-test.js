@@ -1,3 +1,5 @@
+"use strict"
+
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const config = require('./../../config/test')
@@ -97,110 +99,92 @@ describe('Place types API', () => {
                 .end((_, response) => expect(response).to.have.status(403))
         })
 
-        it('Should retrieve all place types in data source', (done) => {
+        it('Should retrieve all place types in data source', async () => {
             // Clear all current place source
-            new TypeSource().clearAll()
-                .then(_ => {
-                    // Given 4 place types in data source
-                    return chai.request(server)
-                        .post('/api/types')
-                        .set('content-type', 'application/json')
-                        .set('authorization', `Bearer ${config.adminTestToken}`)
-                        .send(MULTIPLE_INSERT_TYPE[0])
-                })
-                .then(response => {
-                    // Insert or replace MULTIPLE_INSERT_TYPE[0].type_id with result type_id
-                    MULTIPLE_INSERT_TYPE[0].type_id = response.body.type_id
-                    // Insert next item to data source
-                    return chai.request(server)
-                        .post('/api/types')
-                        .set('content-type', 'application/json')
-                        .set('authorization', `Bearer ${config.adminTestToken}`)
-                        .send(MULTIPLE_INSERT_TYPE[1])
-                })
-                .then(response => {
-                    // Insert or replace MULTIPLE_INSERT_TYPE[1].type_id with result type_id
-                    MULTIPLE_INSERT_TYPE[1].type_id = response.body.type_id
-                    // Insert next item to data source
-                    return chai.request(server)
-                        .post('/api/types')
-                        .set('content-type', 'application/json')
-                        .set('authorization', `Bearer ${config.adminTestToken}`)
-                        .send(MULTIPLE_INSERT_TYPE[2])
-                })
-                .then(response => {
-                    // Insert or replace MULTIPLE_INSERT_TYPE[2].type_id with result type_id
-                    MULTIPLE_INSERT_TYPE[2].type_id = response.body.type_id
-                    // Insert next item to data source
-                    return chai.request(server)
-                        .post('/api/types')
-                        .set('content-type', 'application/json')
-                        .set('authorization', `Bearer ${config.adminTestToken}`)
-                        .send(MULTIPLE_INSERT_TYPE[3])
-                })
-                // When retrieve all place types
-                .then(response => {
-                    // Insert or replace MULTIPLE_INSERT_TYPE[3].type_id with result type_id
-                    MULTIPLE_INSERT_TYPE[3].type_id = response.body.type_id
-                    // Insert next item to data source
-                    return chai.request(server)
-                        .get('/api/types')
-                        .set('authorization', `Bearer ${config.adminTestToken}`)
-                })
-                .then(response => {
-                    // Then service should return status code 200 (OK)
-                    expect(response).to.have.status(200)
-                    // And content type should be `application/json`
-                    expect(response).to.be.json
-                    // And length should be 4 (equals length of MULTIPLE_INSERT_TYPE)
-                    const body = response.body
-                    expect(body).to.have.lengthOf(MULTIPLE_INSERT_TYPE.length)
-                    // Compare types
-                    expect(body[0]).to.deep.equal(MULTIPLE_INSERT_TYPE[0])
-                    expect(body[1]).to.deep.equal(MULTIPLE_INSERT_TYPE[1])
-                    expect(body[2]).to.deep.equal(MULTIPLE_INSERT_TYPE[2])
-                    expect(body[3]).to.deep.equal(MULTIPLE_INSERT_TYPE[3])
-                    // Mark as completed
-                    done()
-                })
-                .catch(err => done(err))
+            await new TypeSource().clearAll()
+            // Insert 4 place types into data source
+            var response = await chai.request(server)
+                .post('/api/types')
+                .set('content-type', 'application/json')
+                .set('authorization', `Bearer ${config.adminTestToken}`)
+                .send(MULTIPLE_INSERT_TYPE[0])
+            // and it must created successfully.
+            expect(response).to.have.status(201)
+            // Insert or replace MULTIPLE_INSERT_TYPE[0].type_id with result type_id
+            MULTIPLE_INSERT_TYPE[0].type_id = response.body.type_id
+
+            var response = await chai.request(server)
+                .post('/api/types')
+                .set('content-type', 'application/json')
+                .set('authorization', `Bearer ${config.adminTestToken}`)
+                .send(MULTIPLE_INSERT_TYPE[1])
+            // and it must created successfully.
+            expect(response).to.have.status(201)
+            // Insert or replace MULTIPLE_INSERT_TYPE[1].type_id with result type_id
+            MULTIPLE_INSERT_TYPE[1].type_id = response.body.type_id
+
+            var response = await chai.request(server)
+                .post('/api/types')
+                .set('content-type', 'application/json')
+                .set('authorization', `Bearer ${config.adminTestToken}`)
+                .send(MULTIPLE_INSERT_TYPE[2])
+            // and it must created successfully.
+            expect(response).to.have.status(201)
+            // Insert or replace MULTIPLE_INSERT_TYPE[2].type_id with result type_id
+            MULTIPLE_INSERT_TYPE[2].type_id = response.body.type_id
+
+            var response = await chai.request(server)
+                .post('/api/types')
+                .set('content-type', 'application/json')
+                .set('authorization', `Bearer ${config.adminTestToken}`)
+                .send(MULTIPLE_INSERT_TYPE[3])
+            // and it must created successfully.
+            expect(response).to.have.status(201)
+            // Insert or replace MULTIPLE_INSERT_TYPE[3].type_id with result type_id
+            MULTIPLE_INSERT_TYPE[3].type_id = response.body.type_id
+
+            // To proof all 4 place types was inserted, query it
+            var response = await chai.request(server)
+                .get('/api/types')
+                .set('authorization', `Bearer ${config.adminTestToken}`)
+            // Then service should return status code 200 (OK)
+            expect(response).to.have.status(200)
+            // And content type should be `application/json`
+            expect(response).to.be.json
+            // And length should be 4 (equals length of MULTIPLE_INSERT_TYPE)
+            const body = response.body
+            expect(body).to.have.lengthOf(MULTIPLE_INSERT_TYPE.length)
+            // Compare types
+            expect(body[0]).to.deep.equal(MULTIPLE_INSERT_TYPE[0])
+            expect(body[1]).to.deep.equal(MULTIPLE_INSERT_TYPE[1])
+            expect(body[2]).to.deep.equal(MULTIPLE_INSERT_TYPE[2])
+            expect(body[3]).to.deep.equal(MULTIPLE_INSERT_TYPE[3])
         }).timeout(timeout)
 
-        it('Should create place type successfully when post object in correct form', (done) => {
-            var insertTypeId    // To store type_id
-            chai.request(server)
+        it('Should create place type successfully when post object in correct form', async () => {
+            // Given a place type and add to data source
+            var response = await chai.request(server)
                 .post('/api/types')
                 .set('content-type', 'application/json')
                 .set('authorization', `Bearer ${config.adminTestToken}`)
                 .send(SINGLE_INSERT_TYPE[0])
-                .then(response => {
-                    // Then service should return status code 201 (Created)
-                    expect(response).to.have.status(201)
-                    // And header content type should be `application/json`
-                    expect(response).to.be.json
-                    // Store type_id from response to variable
-                    insertTypeId = response.body.type_id
-                    // And header field `location` should return id
-                    expect(response).to.have.header('location', `/types/${insertTypeId}`)
-                    // To proof data was stored, try to query it
-                    return chai.request(server)
-                        .get(`/api/types/${insertTypeId}`)
-                        .set('authorization', `Bearer ${config.adminTestToken}`)
-                })
-                .then(response => {
-                    // Then service should return status code 200 (OK)
-                    expect(response).to.have.status(200)
-                    // And content type should be `application/json`
-                    expect(response).to.be.json
-                    // Compare by deep equal to traverse the objects and compare nested properties
-                    expect(response.body).to.deep.equal({
-                        type_id: insertTypeId,
-                        type_name: SINGLE_INSERT_TYPE[0].type_name
-                    })
-                    // Mark as done
-                    done()
-                })
-                .catch(err => done(err))
+            // and it must created successfully.
+            expect(response).to.have.status(201)
+            // store type_id from response for later usage.
+            var insertTypeId = response.body.type_id
+            // To proof data was stored, try to query it
+            var response = await chai.request(server)
+                .get(`/api/types/${insertTypeId}`)
+                .set('authorization', `Bearer ${config.adminTestToken}`)
+            // Then service should return status code 200 (OK)
+            expect(response).to.have.status(200)
+            // And content type should be `application/json`
+            expect(response).to.be.json
+            // Compare by deep equal to traverse the objects and compare nested properties
+            expect(response.body).to.deep.equal({
+                type_id: insertTypeId,
+                type_name: SINGLE_INSERT_TYPE[0].type_name
+            })
         }).timeout(timeout)
     })
 
@@ -232,146 +216,108 @@ describe('Place types API', () => {
                 .end((_, response) => expect(response).to.have.status(404))
         })
 
-        it('Should not update type and get status 401 when token is omit', (done) => {
-            var insertTypeId    // To store type_id
-            chai.request(server)
-                // Given a place type and add to data source
+        it('Should not update type and get status 401 when token is omit', async () => {
+            // Given a place type and add to data source
+            var response = await chai.request(server)
                 .post('/api/types')
                 .set('content-type', 'application/json')
                 .set('authorization', `Bearer ${config.adminTestToken}`)
                 .send(BEFORE_UPDATE_TYPE[0])
-                .then(response => {
-                    // And it must created successfully
-                    expect(response).to.have.status(201)
-                    // Store type_id from response to variable
-                    insertTypeId = response.body.type_id
-                    // When update place type
-                    return chai.request(server)
-                        .put(`/api/types/${insertTypeId}`)
-                        .set('content-type', 'application/json')
-                        .send({
-                            type_id: insertTypeId,
-                            type_name: AFTER_UPDATE_TYPE[0].type_name
-                        })
+            // and it must created successfully.
+            expect(response).to.have.status(201)
+            // store type_id from response for later usage.
+            var insertTypeId = response.body.type_id
+            var response = await chai.request(server)
+                .put(`/api/types/${insertTypeId}`)
+                .set('content-type', 'application/json')
+                .send({
+                    type_id: insertTypeId,
+                    type_name: AFTER_UPDATE_TYPE[0].type_name
                 })
-                .then(response => {
-                    // Then service should return status code 401 (unauthorized)
-                    expect(response).to.have.status(401)
-                    // Mark as done
-                    done()
-                })
-                .catch(err => done(err))
+            // Then service should return status code 401(unauthorized)
+            expect(response).to.have.status(401)
         }).timeout(timeout)
 
-        it('Should not update type and get status 401 when token is invalid', (done) => {
-            var insertTypeId    // To store type_id
-            chai.request(server)
-                // Given a place type and add to data source
+        it('Should not update type and get status 401 when token is invalid', async () => {
+            // Given a place type and add to data source
+            var response = await chai.request(server)
                 .post('/api/types')
                 .set('content-type', 'application/json')
                 .set('authorization', `Bearer ${config.adminTestToken}`)
                 .send(BEFORE_UPDATE_TYPE[1])
-                .then(response => {
-                    // And it must created successfully
-                    expect(response).to.have.status(201)
-                    // Store type_id from response to variable
-                    insertTypeId = response.body.type_id
-                    // When update place type
-                    return chai.request(server)
-                        .put(`/api/types/${insertTypeId}`)
-                        .set('content-type', 'application/json')
-                        .set('authorization', `Bearer ${config.invalidTestToken}`)
-                        .send({
-                            type_id: insertTypeId,
-                            type_name: AFTER_UPDATE_TYPE[1].type_name
-                        })
+            // and it must created successfully.
+            expect(response).to.have.status(201)
+            // store type_id from response for later usage.
+            var insertTypeId = response.body.type_id
+            var response = await chai.request(server)
+                .put(`/api/types/${insertTypeId}`)
+                .set('content-type', 'application/json')
+                .set('authorization', `Bearer ${config.invalidTestToken}`)
+                .send({
+                    type_id: insertTypeId,
+                    type_name: AFTER_UPDATE_TYPE[1].type_name
                 })
-                .then(response => {
-                    // Then service should return status code 401 (unauthorized)
-                    expect(response).to.have.status(401)
-                    // Mark as done
-                    done()
-                })
-                .catch(err => done(err))
+            // Then service should return status code 401 (unauthorized)
+            expect(response).to.have.status(401)
         }).timeout(timeout)
 
-        it('Should not update type when user is not allowed to update records', (done) => {
-            var insertTypeId    // To store type_id
-            chai.request(server)
-                // Given a place type and add to data source
+        it('Should not update type when user is not allowed to update records', async () => {
+            // Given a place type and add to data source
+            var response = await chai.request(server)
                 .post('/api/types')
                 .set('content-type', 'application/json')
                 .set('authorization', `Bearer ${config.adminTestToken}`)
                 .send(BEFORE_UPDATE_TYPE[2])
-                .then(response => {
-                    // And it must created successfully
-                    expect(response).to.have.status(201)
-                    // Store type_id from response to variable
-                    insertTypeId = response.body.type_id
-                    // When update place type
-                    return chai.request(server)
-                        .put(`/api/types/${insertTypeId}`)
-                        .set('content-type', 'application/json')
-                        .set('authorization', `Bearer ${config.memberTestToken}`)
-                        .send({
-                            type_id: insertTypeId,
-                            type_name: AFTER_UPDATE_TYPE[2].type_name
-                        })
+            // and it must created successfully.
+            expect(response).to.have.status(201)
+            // store type_id from response for later usage.
+            var insertTypeId = response.body.type_id
+            var response = await chai.request(server)
+                .put(`/api/types/${insertTypeId}`)
+                .set('content-type', 'application/json')
+                .set('authorization', `Bearer ${config.memberTestToken}`)
+                .send({
+                    type_id: insertTypeId,
+                    type_name: AFTER_UPDATE_TYPE[2].type_name
                 })
-                .then(response => {
-                    // Then service should return status code 403 (forbidden)
-                    expect(response).to.have.status(403)
-                    // Mark as done
-                    done()
-                })
-                .catch(err => done(err))
+            // Then service should return status code 403 (forbidden)
+            expect(response).to.have.status(403)
         }).timeout(timeout)
 
-        it('Should update type successfully when update type in correct form', (done) => {
-            var insertTypeId    // To store type_id
-            chai.request(server)
-                // Given a place type and add to data source
+        it('Should update type successfully when update type in correct form', async () => {
+            // Given a place type and add to data source
+            var response = await chai.request(server)
                 .post('/api/types')
                 .set('content-type', 'application/json')
                 .set('authorization', `Bearer ${config.adminTestToken}`)
                 .send(BEFORE_UPDATE_TYPE[3])
-                .then(response => {
-                    // And it must created successfully
-                    expect(response).to.have.status(201)
-                    // Store type_id from response to variable
-                    insertTypeId = response.body.type_id
-                    // When update place type
-                    return chai.request(server)
-                        .put(`/api/types/${insertTypeId}`)
-                        .set('content-type', 'application/json')
-                        .set('authorization', `Bearer ${config.adminTestToken}`)
-                        .send({
-                            type_id: insertTypeId,
-                            type_name: AFTER_UPDATE_TYPE[3].type_name
-                        })
+            // and it must created successfully.
+            expect(response).to.have.status(201)
+            // store type_id from response for later usage.
+            var insertTypeId = response.body.type_id
+            var response = await chai.request(server)
+                .put(`/api/types/${insertTypeId}`)
+                .set('content-type', 'application/json')
+                .set('authorization', `Bearer ${config.adminTestToken}`)
+                .send({
+                    type_id: insertTypeId,
+                    type_name: AFTER_UPDATE_TYPE[3].type_name
                 })
-                .then(response => {
-                    // Then service should return status code 200 (OK)
-                    expect(response).to.have.status(200)
-                    // To proof data was updated, try to query it
-                    return chai.request(server)
-                        .get(`/api/types/${insertTypeId}`)
-                        .set('authorization', `Bearer ${config.adminTestToken}`)
-                })
-                .then(response => {
-                    // Then service should return status code 200 (OK)
-                    expect(response).to.have.status(200)
-                    // And header should be `application/json`
-                    expect(response).to.be.json
-                    // Compare by deep equal to traverse the objects and compare nested properties
-                    expect(response.body).to.deep.equal({
-                        type_id: insertTypeId,
-                        type_name: AFTER_UPDATE_TYPE[3].type_name
-                    })
-                    // Mark as done
-                    done()
-                })
-                .catch(err => done(err))
+            // Then service should return status code 200 (OK)
+            expect(response).to.have.status(200)
+            // To proof data was updated, try to query it.
+            var response = await chai.request(server)
+                .get(`/api/types/${insertTypeId}`)
+                .set('authorization', `Bearer ${config.adminTestToken}`)
+            // Then service should return status code 200 (OK)
+            expect(response).to.have.status(200)
+            // And header should be `application/json`
+            expect(response).to.be.json
+            // Compare by deep equal to traverse the objects and compare nested properties
+            expect(response.body).to.deep.equal({
+                type_id: insertTypeId,
+                type_name: AFTER_UPDATE_TYPE[3].type_name
+            })
         }).timeout(timeout)
     })
 
@@ -394,119 +340,81 @@ describe('Place types API', () => {
                 .end((_, response) => expect(response).to.have.status(404))
         })
 
-        it('Should not delete type and get status 401 when token is omit', (done) => {
-            var insertTypeId    // To store insert id
-            chai.request(server)
-                // Given a place type and add to data source
+        it('Should not delete type and get status 401 when token is omit', async () => {
+            // Given a place type and add to data source
+            var response = await chai.request(server)
                 .post('/api/types')
                 .set('content-type', 'application/json')
                 .set('authorization', `Bearer ${config.adminTestToken}`)
                 .send(MULTIPLE_DELETE_TYPE[0])
-                .then(response => {
-                    // And it must create successfully
-                    expect(response).to.have.status(201)
-                    // Store type_id from response to variable
-                    insertTypeId = response.body.type_id
-                    // When delete place type by type_id without token
-                    return chai.request(server)
-                        .del(`/api/types/${insertTypeId}`)
-                })
-                .then(response => {
-                    // Then service should return status code 401 (unauthorized)
-                    expect(response).to.have.status(401)
-                    // Mark as done
-                    done()
-                })
-                .catch(err => done(err))
+            // and it must created successfully.
+            expect(response).to.have.status(201)
+            // store type_id from response for later usage.
+            var insertTypeId = response.body.type_id
+            var response = await chai.request(server)
+                .del(`/api/types/${insertTypeId}`)
+            // Then service should return status code 401 (unauthorized)
+            expect(response).to.have.status(401)
         }).timeout(timeout)
 
-        it('Should not delete type and get status 401 when token is invalid', (done) => {
-            var insertTypeId    // To store insert id
-            chai.request(server)
-                // Given a place type and add to data source
+        it('Should not delete type and get status 401 when token is invalid', async () => {
+            // Given a place type and add to data source
+            var response = await chai.request(server)
                 .post('/api/types')
                 .set('content-type', 'application/json')
                 .set('authorization', `Bearer ${config.adminTestToken}`)
                 .send(MULTIPLE_DELETE_TYPE[1])
-                .then(response => {
-                    // And it must create successfully
-                    expect(response).to.have.status(201)
-                    // Store type_id from response to variable
-                    insertTypeId = response.body.type_id
-                    // When delete place type by type_id without token
-                    return chai.request(server)
-                        .del(`/api/types/${insertTypeId}`)
-                        .set('authorization', `Bearer ${config.invalidTestToken}`)
-                })
-                .then(response => {
-                    // Then service should return status code 401 (unauthorized)
-                    expect(response).to.have.status(401)
-                    // Mark as done
-                    done()
-                })
-                .catch(err => done(err))
+            // and it must created successfully.
+            expect(response).to.have.status(201)
+            // store type_id from response for later usage.
+            var insertTypeId = response.body.type_id
+            var response = await chai.request(server)
+                .del(`/api/types/${insertTypeId}`)
+                .set('authorization', `Bearer ${config.invalidTestToken}`)
+            // Then service should return status code 401 (unauthorized)
+            expect(response).to.have.status(401)
         }).timeout(timeout)
 
-        it('Should not delete type when user is not allowed to delete records', (done) => {
-            var insertTypeId    // To store insert id
-            chai.request(server)
-                // Given a place type and add to data source
+        it('Should not delete type when user is not allowed to delete records', async () => {
+            // Given a place type and add to data source
+            var response = await chai.request(server)
                 .post('/api/types')
                 .set('content-type', 'application/json')
                 .set('authorization', `Bearer ${config.adminTestToken}`)
                 .send(MULTIPLE_DELETE_TYPE[2])
-                .then(response => {
-                    // And it must create successfully
-                    expect(response).to.have.status(201)
-                    // Store type_id from response to variable
-                    insertTypeId = response.body.type_id
-                    // When delete place type by type_id without token
-                    return chai.request(server)
-                        .del(`/api/types/${insertTypeId}`)
-                        .set('authorization', `Bearer ${config.memberTestToken}`)
-                })
-                .then(response => {
-                    // Then service should return status code 403 (forbidden)
-                    expect(response).to.have.status(403)
-                    // Mark as done
-                    done()
-                })
-                .catch(err => done(err))
+            // and it must created successfully.
+            expect(response).to.have.status(201)
+            // store type_id from response for later usage.
+            var insertTypeId = response.body.type_id
+            var response = await chai.request(server)
+                .del(`/api/types/${insertTypeId}`)
+                .set('authorization', `Bearer ${config.memberTestToken}`)
+            // Then service should return status code 403 (forbidden)
+            expect(response).to.have.status(403)
         }).timeout(timeout)
 
-        it('Should delete type successfully from given type_id', (done) => {
-            var insertTypeId    // To store insert id
-            chai.request(server)
-                // Given a place type and add to data source
+        it('Should delete type successfully from given type_id', async () => {
+            // Given a place type and add to data source
+            var response = await chai.request(server)
                 .post('/api/types')
                 .set('content-type', 'application/json')
                 .set('authorization', `Bearer ${config.adminTestToken}`)
                 .send(MULTIPLE_DELETE_TYPE[3])
-                .then(response => {
-                    // And it must create successfully
-                    expect(response).to.have.status(201)
-                    // Store type_id from response to variable
-                    insertTypeId = response.body.type_id
-                    // When delete place type by type_id
-                    return chai.request(server)
-                        .del(`/api/types/${insertTypeId}`)
-                        .set('authorization', `Bearer ${config.adminTestToken}`)
-                })
-                .then(response => {
-                    // Then service should return status code 204 (no content)
-                    expect(response).to.have.status(204)
-                    // To proof data was deleted, try to query it
-                    return chai.request(server)
-                        .get(`/api/types/${insertTypeId}`)
-                        .set('authorization', `Bearer ${config.adminTestToken}`)
-                })
-                .then(response => {
-                    // Then service should return status code 404 (not found)
-                    expect(response).to.have.status(404)
-                    // Mark as done
-                    done()
-                })
-                .catch(err => done(err))
+            // and it must created successfully.
+            expect(response).to.have.status(201)
+            // store type_id from response for later usage.
+            var insertTypeId = response.body.type_id
+            var response = await chai.request(server)
+                .del(`/api/types/${insertTypeId}`)
+                .set('authorization', `Bearer ${config.adminTestToken}`)
+            // Then service should return status code 204 (no content)
+            expect(response).to.have.status(204)
+            // To proof data was updated, try to query it.
+            var response = await chai.request(server)
+                .get(`/api/types/${insertTypeId}`)
+                .set('authorization', `Bearer ${config.adminTestToken}`)
+            // Then service should return status code 404 (not found)
+            expect(response).to.have.status(404)
         }).timeout(timeout)
     })
 })
