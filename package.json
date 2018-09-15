@@ -10,6 +10,19 @@
     "coverage": "nyc --reporter=lcov mocha test --recursive --exit",
     "coveralls": "npm run-script coverage && ./node_modules/coveralls/bin/coveralls.js < coverage/lcov.info"
   },
+  "standard": {
+    "globals": [
+      "describe",
+      "context",
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach",
+      "it",
+      "expect",
+      "json"
+    ]
+  },
   "dependencies": {
     "bcrypt": "3.0.0",
     "body-parser": "1.18.3",
@@ -27,6 +40,7 @@
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "nyc": "12.0.2"
+    "nyc": "12.0.2",
+    "standard": "12.0.1"
   }
 }
