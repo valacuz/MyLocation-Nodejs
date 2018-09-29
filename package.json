@@ -20,7 +20,9 @@
       "afterEach",
       "it",
       "expect",
-      "json"
+      "json",
+      "undefined",
+      "null"
     ]
   },
   "dependencies": {
@@ -34,6 +36,7 @@
     "express-jwt": "5.3.1",
     "helmet": "3.12.1",
     "joi": "13.4.0",
+    "jsonwebtoken": "8.3.0",
     "mocha": "5.2.0",
     "mongoose": "5.2.7",
     "mongoose-unique-validator": "2.0.1",
