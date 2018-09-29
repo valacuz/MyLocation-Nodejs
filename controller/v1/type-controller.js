@@ -13,7 +13,7 @@ const TypeController = function () { }
 
 TypeController.prototype.getTypes = async (request, response) => {
   const payload = request.payload
-  var [userErr, user] = await to(userSource.checkUser(payload.user, payload.password))
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -34,7 +34,7 @@ TypeController.prototype.getTypes = async (request, response) => {
 
 TypeController.prototype.getTypeById = async (request, response) => {
   const payload = request.payload
-  var [userErr, user] = await to(userSource.checkUser(payload.user, payload.password))
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -60,7 +60,7 @@ TypeController.prototype.getTypeById = async (request, response) => {
 
 TypeController.prototype.addType = async (request, response) => {
   const payload = request.payload
-  var [userErr, user] = await to(userSource.checkUser(payload.user, payload.password))
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -69,7 +69,7 @@ TypeController.prototype.addType = async (request, response) => {
     // user not found due to invalid information, response unauthorized.
     response.sendStatus(401)
     return
-  } else if (!user.can_insert) {
+  } else if (!user.group.can_insert) {
     // user not allow to insert, response forbidden.
     response.sendStatus(403)
     return
@@ -96,7 +96,7 @@ TypeController.prototype.addType = async (request, response) => {
 
 TypeController.prototype.updateType = async (request, response) => {
   const payload = request.payload
-  var [userErr, user] = await to(userSource.checkUser(payload.user, payload.password))
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -105,7 +105,7 @@ TypeController.prototype.updateType = async (request, response) => {
     // user not found due to invalid information, response unauthorized.
     response.sendStatus(401)
     return
-  } else if (!user.can_update) {
+  } else if (!user.group.can_update) {
     // user not allow to update, response forbidden.
     response.sendStatus(403)
     return
@@ -139,7 +139,7 @@ TypeController.prototype.updateType = async (request, response) => {
 
 TypeController.prototype.deleteType = async (request, response) => {
   const payload = request.payload
-  var [userErr, user] = await to(userSource.checkUser(payload.user, payload.password))
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
   if (userErr) {
     response.sendStatus(503)
     return
@@ -147,7 +147,7 @@ TypeController.prototype.deleteType = async (request, response) => {
     // user not found due to invalid information, response unauthorized.
     response.sendStatus(401)
     return
-  } else if (!user.can_delete) {
+  } else if (!user.group.can_delete) {
     // user not allow to delete, response forbidden.
     response.sendStatus(403)
     return

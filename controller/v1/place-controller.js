@@ -13,7 +13,7 @@ const PlaceController = function () { }
 
 PlaceController.prototype.getPlaces = async (request, response) => {
   const payload = request.payload
-  var [userErr, user] = await to(userSource.checkUser(payload.user, payload.password))
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -36,7 +36,7 @@ PlaceController.prototype.getPlaces = async (request, response) => {
 
 PlaceController.prototype.getPlaceById = async (request, response) => {
   const payload = request.payload
-  var [userErr, user] = await to(userSource.checkUser(payload.user, payload.password))
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -61,7 +61,7 @@ PlaceController.prototype.getPlaceById = async (request, response) => {
 
 PlaceController.prototype.addPlace = async (request, response) => {
   const payload = request.payload
-  var [userErr, user] = await to(userSource.checkUser(payload.user, payload.password))
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -70,7 +70,7 @@ PlaceController.prototype.addPlace = async (request, response) => {
     // user not found due to invalid information, response unauthorized.
     response.sendStatus(401)
     return
-  } else if (!user.can_insert) {
+  } else if (!user.group.can_insert) {
     // user not allow to insert, response forbidden.
     response.sendStatus(403)
     return
@@ -97,7 +97,7 @@ PlaceController.prototype.addPlace = async (request, response) => {
 
 PlaceController.prototype.updatePlace = async (request, response) => {
   const payload = request.payload
-  var [userErr, user] = await to(userSource.checkUser(payload.user, payload.password))
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -106,7 +106,7 @@ PlaceController.prototype.updatePlace = async (request, response) => {
     // user not found due to invalid information, response unauthorized.
     response.sendStatus(401)
     return
-  } else if (!user.can_update) {
+  } else if (!user.group.can_update) {
     // user not allow to update, response forbidden.
     response.sendStatus(403)
     return
@@ -140,7 +140,7 @@ PlaceController.prototype.updatePlace = async (request, response) => {
 
 PlaceController.prototype.deletePlace = async (request, response) => {
   const payload = request.payload
-  var [userErr, user] = await to(userSource.checkUser(payload.user, payload.password))
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
   if (userErr) {
     response.sendStatus(503)
     return
@@ -148,7 +148,7 @@ PlaceController.prototype.deletePlace = async (request, response) => {
     // user not found due to invalid information, response unauthorized.
     response.sendStatus(401)
     return
-  } else if (!user.can_delete) {
+  } else if (!user.group.can_delete) {
     // user not allow to delete, response forbidden.
     response.sendStatus(403)
     return
