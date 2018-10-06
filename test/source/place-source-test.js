@@ -99,6 +99,7 @@ describe('Sample Place Source', () => {
     try {
       // When try to update place by place_id which not exists in data source.
       await placeSource.updatePlace(SAMPLE_PLACES[3])
+      /* istanbul ignore next */
       expect.fail(null, null, 'the error should be thrown.')
     } catch (err) {
       // Then the error should be thrown.
@@ -124,6 +125,7 @@ describe('Sample Place Source', () => {
     try {
       // When try to delete place by place_id which not exists in data source.
       await placeSource.deletePlace('NOT_EXISTS_PLACE_ID')
+      /* istanbul ignore next */
       expect.fail(null, null, 'the error should be thrown.')
     } catch (err) {
       // Then the error should be thrown.

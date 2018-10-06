@@ -77,6 +77,7 @@ describe('Sample Place Type Source', () => {
     try {
       // When try to update place type by type_id which not exists in data source.
       await typeSource.updateType(SAMPLE_TYPES[3])
+      /* istanbul ignore next */
       expect.fail(null, null, 'the error should be thrown')
     } catch (err) {
       // Then the error should be thrown.
@@ -102,6 +103,7 @@ describe('Sample Place Type Source', () => {
     try {
       // When try to delete place type by type_id which not exists in data source.
       await typeSource.deleteType('NOT_EXISTS_TYPE_ID')
+      /* istanbul ignore next */
       expect.fail(null, null, 'the error should be thrown')
     } catch (err) {
       // Then the error should be thrown.

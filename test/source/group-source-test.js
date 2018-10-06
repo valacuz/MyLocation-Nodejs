@@ -77,7 +77,7 @@ describe('Sample Group Source', () => {
     try {
       // When try to update group by group_id which not exists in data source
       await groupSource.updateGroup(Object.assign({}, SAMPLE_GROUPS[2]))
-      // And retrieve group by group_id which just updated from data source.
+      /* istanbul ignore next */
       expect.fail(null, null, 'the error should be thrown')
     } catch (err) {
       // Then the error should be thrown.
@@ -103,6 +103,7 @@ describe('Sample Group Source', () => {
     try {
       // When delete group by given group_id.
       await groupSource.deleteGroup('NOT_EXISTS_GROUP_ID')
+      /* istanbul ignore next */
       expect.fail(null, null, 'the error should be thrown')
     } catch (err) {
       // Then the error should be thrown.
