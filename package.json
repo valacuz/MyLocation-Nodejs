@@ -10,22 +10,44 @@
     "coverage": "nyc --reporter=lcov mocha test --recursive --exit",
     "coveralls": "npm run-script coverage && ./node_modules/coveralls/bin/coveralls.js < coverage/lcov.info"
   },
+  "standard": {
+    "globals": [
+      "describe",
+      "context",
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach",
+      "it",
+      "expect",
+      "json",
+      "undefined",
+      "null"
+    ]
+  },
+  "nyc": {
+    "exclude": [
+      "extension/to.js"
+    ]
+  },
   "dependencies": {
     "body-parser": "1.18.3",
     "chai": "4.1.2",
     "chai-http": "4.0.0",
     "coveralls": "3.0.2",
-    "env2": "^2.2.2",
+    "env2": "2.2.2",
     "express": "4.16.3",
-    "express-jwt": "^5.3.1",
+    "express-jwt": "5.3.1",
     "helmet": "3.12.1",
     "joi": "13.4.0",
+    "jsonwebtoken": "8.3.0",
     "mocha": "5.2.0",
     "mongoose": "5.2.7",
     "mongoose-unique-validator": "2.0.1",
     "uuid": "3.3.2"
   },
   "devDependencies": {
-    "nyc": "12.0.2"
+    "nyc": "12.0.2",
+    "standard": "12.0.1"
   }
 }

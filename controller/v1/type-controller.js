@@ -1,6 +1,9 @@
+'use strict'
+
 const TypeSource = require('./../../model/source/type')
 const UserSource = require('./../../model/source/user')
 const Validator = require('./../../model/validator')
+const to = require('./../../extension/to').to
 
 const CONTENT_TYPE_JSON = 'application/json'
 const userSource = new UserSource()
@@ -8,143 +11,176 @@ const typeSource = new TypeSource()
 
 const TypeController = function () { }
 
-TypeController.prototype.getTypes = (request, response) => {
-    const payload = request.payload
-    userSource.checkUser(payload.user, payload.password)
-        .then(user => {
-            if (!user) {
-                // If user not found, response unauthorized.
-                response.sendStatus(401)
-                return
-            }
-            typeSource.getTypes()
-                .then(types => response.json(types))
-        })
-        .catch(_ => response.sendStatus(503))
+TypeController.prototype.getTypes = async (request, response) => {
+  const payload = request.payload
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if */
+  if (userErr) {
+    // any error, response unavailable.
+    response.sendStatus(503)
+    return
+  } else if (!user) {
+    // user not found due to invalid information, response unauthorized.
+    response.sendStatus(401)
+    return
+  }
+  var [queryErr, types] = await to(typeSource.getTypes())
+  /* istanbul ignore if */
+  if (queryErr) {
+    response.sendStatus(503)
+    return
+  }
+  // query successful, response ok with json array of place types.
+  response.json(types)
 }
 
-TypeController.prototype.getTypeById = (request, response) => {
-    const payload = request.payload
-    userSource.checkUser(payload.user, payload.password)
-        .then(user => {
-            if (!user) {
-                // If user not found, response unauthorized.
-                response.sendStatus(401)
-                return
-            }
-            typeSource.getTypeById(request.params.id)
-                .then(type => {
-                    if (type) {
-                        response.json(type)
-                    } else {
-                        response.sendStatus(404)
-                    }
-                })
-        })
-        .catch(_ => response.sendStatus(503))
+TypeController.prototype.getTypeById = async (request, response) => {
+  const payload = request.payload
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if */
+  if (userErr) {
+    // any error, response unavailable.
+    response.sendStatus(503)
+    return
+  } else if (!user) {
+    // user not found due to invalid information, response unauthorized.
+    response.sendStatus(401)
+    return
+  }
+  const queryString = request.params
+  var [queryErr, type] = await to(typeSource.getTypeById(queryString.id))
+  /* istanbul ignore if */
+  if (queryErr) {
+    response.sendStatus(503)
+    return
+  } else if (!type) {
+    // place type not found, response not found.
+    response.sendStatus(404)
+    return
+  }
+  // query successful, response ok with json of place type.
+  response.json(type)
 }
 
-TypeController.prototype.addType = (request, response) => {
-    const payload = request.payload
-    userSource.checkUser(payload.user, payload.password)
-        .then(user => {
-            if (!user) {
-                // If user not found, response unauthorized.
-                response.sendStatus(401)
-                return
-            } else if (!user.can_insert) {
-                // If user found but not allowed to insert records, response forbidden.
-                response.sendStatus(403)
-                return
-            }
-            const body = request.body
-            const contentType = request.headers['content-type']
-            const result = new Validator().validatePlaceType(body)
-
-            // If object is invalid form, return 400 (Bad request)
-            if (contentType != CONTENT_TYPE_JSON || result.error) {
-                response.sendStatus(400)
-                return
-            }
-            // Otherwise, add type to data source
-            typeSource.addType(body)
-                .then(newType => {
-                    response.status(201)
-                        .location(`/types/${newType.type_id}`)
-                        .contentType(CONTENT_TYPE_JSON)
-                        .send(newType)
-                })
-        })
-        .catch(_ => sendStatus(503))
+TypeController.prototype.addType = async (request, response) => {
+  const payload = request.payload
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if */
+  if (userErr) {
+    // any error, response unavailable.
+    response.sendStatus(503)
+    return
+  } else if (!user) {
+    // user not found due to invalid information, response unauthorized.
+    response.sendStatus(401)
+    return
+  } else if (!user.group.can_insert) {
+    // user not allow to insert, response forbidden.
+    response.sendStatus(403)
+    return
+  }
+  const body = request.body
+  const contentType = request.headers['content-type']
+  const result = new Validator().validatePlaceType(body)
+  if (contentType !== CONTENT_TYPE_JSON || result.error) {
+    // content not provided or invalid form of request, response bad request.
+    response.sendStatus(400)
+    return
+  }
+  var [addErr, newType] = await to(typeSource.addType(body))
+  /* istanbul ignore if */
+  if (addErr) {
+    response.sendStatus(503)
+    return
+  }
+  // creation successful, response created.
+  response.status(201)
+    .location(`/types/${newType.type_id}`)
+    .contentType(CONTENT_TYPE_JSON)
+    .send(newType)
 }
 
-TypeController.prototype.updateType = (request, response) => {
-    const payload = request.payload
-    userSource.checkUser(payload.user, payload.password)
-        .then(user => {
-            if (!user) {
-                // If user not found, response unauthorized.
-                response.sendStatus(401)
-                return
-            } else if (!user.can_update) {
-                // If user found but not allowed to insert records, response forbidden.
-                response.sendStatus(403)
-                return
-            }
-            // If type_id from body and type_id from query string is not the same, reject.
-            const body = request.body
-            const contentType = request.headers['content-type']
-            const queryString = request.params
-            const result = new Validator().validatePlaceType(body)
-
-            if (queryString.id != body.type_id || contentType != CONTENT_TYPE_JSON || result.error) {
-                response.sendStatus(400)
-                return
-            }
-            // Try to find place type by id.
-            typeSource.getTypeById(queryString.id)
-                .then(type => {
-                    if (type) {
-                        // When place type was found, update it.
-                        typeSource.updateType(body)
-                            .then(() => response.sendStatus(200))
-                    } else {
-                        // otherwise, response not found.
-                        response.sendStatus(404)
-                    }
-                })
-        })
-        .catch(_ => response.sendStatus(503))
+TypeController.prototype.updateType = async (request, response) => {
+  const payload = request.payload
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if */
+  if (userErr) {
+    // any error, response unavailable.
+    response.sendStatus(503)
+    return
+  } else if (!user) {
+    // user not found due to invalid information, response unauthorized.
+    response.sendStatus(401)
+    return
+  } else if (!user.group.can_update) {
+    // user not allow to update, response forbidden.
+    response.sendStatus(403)
+    return
+  }
+  const body = request.body
+  const contentType = request.headers['content-type']
+  const queryString = request.params
+  const result = new Validator().validatePlaceType(body)
+  if (queryString.id !== body.type_id || contentType !== CONTENT_TYPE_JSON || result.error) {
+    // content not provided or invalid form of request, response bad request.
+    response.sendStatus(400)
+    return
+  }
+  var [err, type] = await to(typeSource.getTypeById(queryString.id))
+  /* istanbul ignore if */
+  if (err) {
+    response.sendStatus(503)
+    return
+  } else if (!type) {
+    // place type to updated not found, response not found.
+    response.sendStatus(404)
+    return
+  }
+  var [updateErr] = await to(typeSource.updateType(body))
+  /* istanbul ignore if */
+  if (updateErr) {
+    response.sendStatus(503)
+    return
+  }
+  // updation successful, response ok.
+  response.sendStatus(200)
 }
 
-TypeController.prototype.deleteType = (request, response) => {
-    const payload = request.payload
-    userSource.checkUser(payload.user, payload.password)
-        .then(user => {
-            if (!user) {
-                // If user not found, response unauthorized.
-                response.sendStatus(401)
-                return
-            } else if (!user.can_delete) {
-                // If user found but not allowed to delete records, response forbidden.
-                response.sendStatus(403)
-                return
-            }
-            // Try to find place type by id.
-            const id = request.params.id
-            typeSource.getTypeById(id)
-                .then(type => {
-                    if (type) {
-                        // When place type was found, delete it.
-                        typeSource.deleteType(id)
-                            .then(() => response.sendStatus(204))
-                    } else {
-                        // otherwise, response not found.
-                        response.sendStatus(404)
-                    }
-                })
-        })
-        .catch(_ => response.sendStatus(503))
+TypeController.prototype.deleteType = async (request, response) => {
+  const payload = request.payload
+  var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if */
+  if (userErr) {
+    response.sendStatus(503)
+    return
+  } else if (!user) {
+    // user not found due to invalid information, response unauthorized.
+    response.sendStatus(401)
+    return
+  } else if (!user.group.can_delete) {
+    // user not allow to delete, response forbidden.
+    response.sendStatus(403)
+    return
+  }
+  const queryString = request.params
+  var [queryErr, type] = await to(typeSource.getTypeById(queryString.id))
+  /* istanbul ignore if */
+  if (queryErr) {
+    response.sendStatus(503)
+    return
+  } else if (!type) {
+    // place type not found, response not found.
+    response.sendStatus(404)
+    return
+  }
+  var [deleteErr] = await to(typeSource.deleteType(queryString.id))
+  /* istanbul ignore if */
+  if (deleteErr) {
+    response.sendStatus(503)
+    return
+  }
+  // deletion successful, response no content.
+  response.sendStatus(204)
 }
 
 module.exports = TypeController

@@ -1,7 +1,9 @@
-# My Location web services (node.js)
-A practicing web services project written on node.js + expressjs contains CRUD operation.
+# My Location web services (express.js)
+A practicing web services project written on node.js + express.js contains CRUD operation.
 
-[![Build Status](https://travis-ci.org/valacuz/my-location-node.svg?branch=master)](https://travis-ci.org/valacuz/my-location-node) [![Coverage Status](https://coveralls.io/repos/github/valacuz/my-location-node/badge.svg?branch=master)](https://coveralls.io/github/valacuz/my-location-node?branch=master)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![Build Status](https://travis-ci.org/valacuz/my-location-node.svg?branch=master)](https://travis-ci.org/valacuz/my-location-node)
+[![Coverage Status](https://coveralls.io/repos/github/valacuz/my-location-node/badge.svg?branch=master)](https://coveralls.io/github/valacuz/my-location-node?branch=master)
 
 ## Dependencies
 - Application
@@ -21,6 +23,7 @@ A practicing web services project written on node.js + expressjs contains CRUD o
 
 - Etc.
     - [env2](https://github.com/dwyl/env2) - Environment variable loader
+    - [standardjs](https://github.com/standard/standard) - JavaScript standard style
 
 ## Structure
 - `app.js` - The entry point to application. This file defines express server. It also requires `route` to handle request from clients.
@@ -29,6 +32,9 @@ A practicing web services project written on node.js + expressjs contains CRUD o
 - `model` - This folder contains business logic of application such as Data sources, Validation rules, etc.
 - `route` - This folder contains route for api, decide what to do when clients connected to services in various path.
 - `test` - This folder contains test script.
+
+## Pipeline
+- `local` -> `github` -> `travisci` -> `coveralls` -> `heroku`
 
 ## Future implmentation
 - Upload picture to Amazon S3
