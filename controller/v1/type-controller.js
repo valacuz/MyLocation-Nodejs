@@ -14,6 +14,7 @@ const TypeController = function () { }
 TypeController.prototype.getTypes = async (request, response) => {
   const payload = request.payload
   var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if */
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -24,6 +25,7 @@ TypeController.prototype.getTypes = async (request, response) => {
     return
   }
   var [queryErr, types] = await to(typeSource.getTypes())
+  /* istanbul ignore if */
   if (queryErr) {
     response.sendStatus(503)
     return
@@ -35,6 +37,7 @@ TypeController.prototype.getTypes = async (request, response) => {
 TypeController.prototype.getTypeById = async (request, response) => {
   const payload = request.payload
   var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if */
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -46,6 +49,7 @@ TypeController.prototype.getTypeById = async (request, response) => {
   }
   const queryString = request.params
   var [queryErr, type] = await to(typeSource.getTypeById(queryString.id))
+  /* istanbul ignore if */
   if (queryErr) {
     response.sendStatus(503)
     return
@@ -61,6 +65,7 @@ TypeController.prototype.getTypeById = async (request, response) => {
 TypeController.prototype.addType = async (request, response) => {
   const payload = request.payload
   var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if */
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -83,6 +88,7 @@ TypeController.prototype.addType = async (request, response) => {
     return
   }
   var [addErr, newType] = await to(typeSource.addType(body))
+  /* istanbul ignore if */
   if (addErr) {
     response.sendStatus(503)
     return
@@ -97,6 +103,7 @@ TypeController.prototype.addType = async (request, response) => {
 TypeController.prototype.updateType = async (request, response) => {
   const payload = request.payload
   var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if */
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -120,6 +127,7 @@ TypeController.prototype.updateType = async (request, response) => {
     return
   }
   var [err, type] = await to(typeSource.getTypeById(queryString.id))
+  /* istanbul ignore if */
   if (err) {
     response.sendStatus(503)
     return
@@ -129,6 +137,7 @@ TypeController.prototype.updateType = async (request, response) => {
     return
   }
   var [updateErr] = await to(typeSource.updateType(body))
+  /* istanbul ignore if */
   if (updateErr) {
     response.sendStatus(503)
     return
@@ -140,6 +149,7 @@ TypeController.prototype.updateType = async (request, response) => {
 TypeController.prototype.deleteType = async (request, response) => {
   const payload = request.payload
   var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if */
   if (userErr) {
     response.sendStatus(503)
     return
@@ -154,6 +164,7 @@ TypeController.prototype.deleteType = async (request, response) => {
   }
   const queryString = request.params
   var [queryErr, type] = await to(typeSource.getTypeById(queryString.id))
+  /* istanbul ignore if */
   if (queryErr) {
     response.sendStatus(503)
     return
@@ -163,6 +174,7 @@ TypeController.prototype.deleteType = async (request, response) => {
     return
   }
   var [deleteErr] = await to(typeSource.deleteType(queryString.id))
+  /* istanbul ignore if */
   if (deleteErr) {
     response.sendStatus(503)
     return

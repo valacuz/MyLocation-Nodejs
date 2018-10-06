@@ -14,6 +14,7 @@ const PlaceController = function () { }
 PlaceController.prototype.getPlaces = async (request, response) => {
   const payload = request.payload
   var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if */
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -26,6 +27,7 @@ PlaceController.prototype.getPlaces = async (request, response) => {
   const offset = request.query.offset !== undefined ? Number(request.query.offset) : 0
   const limit = request.query.limit !== undefined ? Number(request.query.limit) : 20
   var [queryErr, places] = await to(placeSource.getPlaces(offset, limit))
+  /* istanbul ignore if  */
   if (queryErr) {
     response.sendStatus(503)
     return
@@ -37,6 +39,7 @@ PlaceController.prototype.getPlaces = async (request, response) => {
 PlaceController.prototype.getPlaceById = async (request, response) => {
   const payload = request.payload
   var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if  */
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -47,6 +50,7 @@ PlaceController.prototype.getPlaceById = async (request, response) => {
     return
   }
   var [queryErr, place] = await to(placeSource.getPlaceById(request.params.id))
+  /* istanbul ignore if  */
   if (queryErr) {
     response.sendStatus(503)
     return
@@ -62,6 +66,7 @@ PlaceController.prototype.getPlaceById = async (request, response) => {
 PlaceController.prototype.addPlace = async (request, response) => {
   const payload = request.payload
   var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if  */
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -84,6 +89,7 @@ PlaceController.prototype.addPlace = async (request, response) => {
     return
   }
   var [addErr, newPlace] = await to(placeSource.addPlace(body))
+  /* istanbul ignore if  */
   if (addErr) {
     response.sendStatus(503)
     return
@@ -98,6 +104,7 @@ PlaceController.prototype.addPlace = async (request, response) => {
 PlaceController.prototype.updatePlace = async (request, response) => {
   const payload = request.payload
   var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if  */
   if (userErr) {
     // any error, response unavailable.
     response.sendStatus(503)
@@ -121,6 +128,7 @@ PlaceController.prototype.updatePlace = async (request, response) => {
     return
   }
   var [queryErr, place] = await to(placeSource.getPlaceById(queryString.id))
+  /* istanbul ignore if  */
   if (queryErr) {
     response.sendStatus(503)
     return
@@ -130,6 +138,7 @@ PlaceController.prototype.updatePlace = async (request, response) => {
     return
   }
   var [updateErr] = await to(placeSource.updatePlace(body))
+  /* istanbul ignore if  */
   if (updateErr) {
     response.sendStatus(503)
     return
@@ -141,6 +150,7 @@ PlaceController.prototype.updatePlace = async (request, response) => {
 PlaceController.prototype.deletePlace = async (request, response) => {
   const payload = request.payload
   var [userErr, user] = await to(userSource.checkUser(payload.username, payload.password))
+  /* istanbul ignore if  */
   if (userErr) {
     response.sendStatus(503)
     return
@@ -155,6 +165,7 @@ PlaceController.prototype.deletePlace = async (request, response) => {
   }
   const queryString = request.params
   var [queryErr, place] = await to(placeSource.getPlaceById(queryString.id))
+  /* istanbul ignore if  */
   if (queryErr) {
     response.sendStatus(503)
     return
@@ -164,6 +175,7 @@ PlaceController.prototype.deletePlace = async (request, response) => {
     return
   }
   var [deleteErr] = await to(placeSource.deletePlace(queryString.id))
+  /* istanbul ignore if  */
   if (deleteErr) {
     response.sendStatus(503)
     return
