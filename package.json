@@ -25,6 +25,11 @@
       "null"
     ]
   },
+  "nyc": {
+    "exclude": [
+      "extension/to.js"
+    ]
+  },
   "dependencies": {
     "body-parser": "1.18.3",
     "chai": "4.1.2",
