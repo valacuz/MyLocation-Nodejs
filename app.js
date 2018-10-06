@@ -13,9 +13,9 @@ app.use(helmet())
 app.use(bodyParser.json())
 // Connect to mongo db
 mongoose.connect(config.mongoDbUrl, {
-    user: config.mongoDbUser,
-    pass: config.mongoDbPwd,
-    useNewUrlParser: true
+  user: config.mongoDbUser,
+  pass: config.mongoDbPwd,
+  useNewUrlParser: true
 })
 // Register model for mongoose
 require('./model/source/place/mongo-place')
