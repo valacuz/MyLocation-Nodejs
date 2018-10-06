@@ -14,7 +14,7 @@ describe('Sample Place Type Source', () => {
   it('Should not found place type when type_id is not exists in data source', async () => {
     const typeSource = new TypeSource()
     // Given one place type in data source.
-    await typeSource.addType(SAMPLE_TYPES[0])
+    await typeSource.addType(Object.assign({}, SAMPLE_TYPES[0]))
     // When try to find place type with not exists type_id.
     const type = await typeSource.getTypeById('NOT_EXISTS_TYPE_ID')
     // Then place type should not be found (undefined).
@@ -24,7 +24,7 @@ describe('Sample Place Type Source', () => {
   it('Should not found place type when type_id is undefined', async () => {
     const typeSource = new TypeSource()
     // Given one place type in data source.
-    await typeSource.addType(SAMPLE_TYPES[0])
+    await typeSource.addType(Object.assign({}, SAMPLE_TYPES[0]))
     // When try to find place type with undefined.
     const type = await typeSource.getTypeById(undefined)
     // Then place type should not be found (undefined).
@@ -34,7 +34,7 @@ describe('Sample Place Type Source', () => {
   it('Should retrieve place type which just added to data source', async () => {
     const typeSource = new TypeSource()
     // Given one place type in data source.
-    const newType = await typeSource.addType(SAMPLE_TYPES[0])
+    const newType = await typeSource.addType(Object.assign({}, SAMPLE_TYPES[0]))
     // When try to find place type with newly type_id.
     const type = await typeSource.getTypeById(newType.type_id)
     // Then place type should be found and be equal to place type which just added.
@@ -44,24 +44,23 @@ describe('Sample Place Type Source', () => {
   it('Should retrieve array of place types after adding them to data source', async () => {
     const typeSource = new TypeSource()
     // Given an array of place type and add to data source
-    await typeSource.addType(SAMPLE_TYPES[0])
-    await typeSource.addType(SAMPLE_TYPES[1])
-    await typeSource.addType(SAMPLE_TYPES[2])
-    await typeSource.addType(SAMPLE_TYPES[3])
+    const insertTypes = SAMPLE_TYPES.slice(0)
+    for (var i = 0; i < insertTypes.length; i++) {
+      await typeSource.addType(insertTypes[i])
+    }
     // When try to query all place types from data source
     const types = await typeSource.getTypes()
     // Then all place types which just added should be found
-    expect(types).to.have.lengthOf(SAMPLE_TYPES.length)
-    expect(types[0]).to.deep.equal(SAMPLE_TYPES[0])
-    expect(types[1]).to.deep.equal(SAMPLE_TYPES[1])
-    expect(types[2]).to.deep.equal(SAMPLE_TYPES[2])
-    expect(types[3]).to.deep.equal(SAMPLE_TYPES[3])
+    expect(types).to.have.lengthOf(insertTypes.length)
+    for (i = 0; i < insertTypes.length; i++) {
+      expect(types[i]).to.deep.equal(insertTypes[i])
+    }
   })
 
   it('Should update place type successfully', async () => {
     const typeSource = new TypeSource()
     // Given one place type in data source.
-    const newType = await typeSource.addType(SAMPLE_TYPES[0])
+    const newType = await typeSource.addType(Object.assign({}, SAMPLE_TYPES[0]))
     // When change name and update in data source.
     newType.type_name = SAMPLE_TYPES[2].type_name
     await typeSource.updateType(newType)
@@ -74,7 +73,7 @@ describe('Sample Place Type Source', () => {
   it('Should not update place type when type_id is not exists in data source', async () => {
     const typeSource = new TypeSource()
     // Given one place type in data source.
-    await typeSource.addType(SAMPLE_TYPES[0])
+    await typeSource.addType(Object.assign({}, SAMPLE_TYPES[0]))
     try {
       // When try to update place type by type_id which not exists in data source.
       await typeSource.updateType(SAMPLE_TYPES[3])
@@ -88,7 +87,7 @@ describe('Sample Place Type Source', () => {
   it('Should delete place type successfully and not being retrieved', async () => {
     const typeSource = new TypeSource()
     // Given one place type in data source.
-    const newType = await typeSource.addType(SAMPLE_TYPES[0])
+    const newType = await typeSource.addType(Object.assign({}, SAMPLE_TYPES[0]))
     // When delete type by given type_id.
     await typeSource.deleteType(newType.type_id)
     // Then place type should not be retrieved from data source (be undefined).
@@ -99,7 +98,7 @@ describe('Sample Place Type Source', () => {
   it('Should not delete place type when type_id is not exists in data source', async () => {
     const typeSource = new TypeSource()
     // Given one place type in data source.
-    await typeSource.addType(SAMPLE_TYPES[0])
+    await typeSource.addType(Object.assign({}, SAMPLE_TYPES[0]))
     try {
       // When try to delete place type by type_id which not exists in data source.
       await typeSource.deleteType('NOT_EXISTS_TYPE_ID')

@@ -14,7 +14,7 @@ describe('Sample Place Source', () => {
   it('Should not found place when place_id is not exists in data source', async () => {
     const placeSource = new PlaceSource()
     // Given one place in data source.
-    await placeSource.addPlace(SAMPLE_PLACES[0])
+    await placeSource.addPlace(Object.assign({}, SAMPLE_PLACES[0]))
     // When try to find place with non exists place_id.
     const place = await placeSource.getPlaceById('NOT_EXISTS_PLACE_ID')
     // Then place should not be found (undefined).
@@ -24,7 +24,7 @@ describe('Sample Place Source', () => {
   it('Should not found place when place_id is undefined', async () => {
     const placeSource = new PlaceSource()
     // Given one place in data source.
-    await placeSource.addPlace(SAMPLE_PLACES[0])
+    await placeSource.addPlace(Object.assign({}, SAMPLE_PLACES[0]))
     // When try to find place with non exists place_id.
     const place = await placeSource.getPlaceById(undefined)
     // Then place should not be found (undefined).
@@ -34,7 +34,7 @@ describe('Sample Place Source', () => {
   it('Should retrieve place which just added to data source', async () => {
     const placeSource = new PlaceSource()
     // Given one place in data source.
-    const newPlace = await placeSource.addPlace(SAMPLE_PLACES[0])
+    const newPlace = await placeSource.addPlace(Object.assign({}, SAMPLE_PLACES[0]))
     // When try to find place with newly place_id.
     const place = await placeSource.getPlaceById(newPlace.place_id)
     // Then place should be found and be equal to place which just added.
@@ -44,18 +44,17 @@ describe('Sample Place Source', () => {
   it('Should retrieve array of places after adding them to data source', async () => {
     const placeSource = new PlaceSource()
     // Given four of places and add to data source.
-    await placeSource.addPlace(SAMPLE_PLACES[0])
-    await placeSource.addPlace(SAMPLE_PLACES[1])
-    await placeSource.addPlace(SAMPLE_PLACES[2])
-    await placeSource.addPlace(SAMPLE_PLACES[3])
+    const insertPlaces = SAMPLE_PLACES.slice(0)
+    for (var i = 0; i < insertPlaces.length; i++) {
+      await placeSource.addPlace(insertPlaces[i])
+    }
     // When try to query all places from data source.
-    const places = await placeSource.getPlaces(0, 20)
+    const places = await placeSource.getPlaces()
     // Then all places which just added should be found.
     expect(places).to.have.lengthOf(SAMPLE_PLACES.length)
-    expect(places[0]).to.deep.equal(SAMPLE_PLACES[0])
-    expect(places[1]).to.deep.equal(SAMPLE_PLACES[1])
-    expect(places[2]).to.deep.equal(SAMPLE_PLACES[2])
-    expect(places[3]).to.deep.equal(SAMPLE_PLACES[3])
+    for (i = 0; i < insertPlaces.length; i++) {
+      expect(places[i]).to.deep.equal(insertPlaces[i])
+    }
   })
 
   it('Should retrieve array of places by offset and limit', async () => {
@@ -63,23 +62,23 @@ describe('Sample Place Source', () => {
     const limit = 2
     const placeSource = new PlaceSource()
     // Given four of places and add to data source.
-    await placeSource.addPlace(SAMPLE_PLACES[0])
-    await placeSource.addPlace(SAMPLE_PLACES[1])
-    await placeSource.addPlace(SAMPLE_PLACES[2])
-    await placeSource.addPlace(SAMPLE_PLACES[3])
+    const insertPlaces = SAMPLE_PLACES.slice(0)
+    for (var i = 0; i < insertPlaces.length; i++) {
+      await placeSource.addPlace(insertPlaces[i])
+    }
     // When try to query places from data source with offset and limit.
     const places = await placeSource.getPlaces(offset, limit)
     // Then the number of places should be equal to limit.
     expect(places).to.have.lengthOf(limit)
     // And places should be equal to items in data source.
-    expect(places[0]).to.deep.equal(SAMPLE_PLACES[0 + offset])
-    expect(places[1]).to.deep.equal(SAMPLE_PLACES[1 + offset])
+    expect(places[0]).to.deep.equal(insertPlaces[0 + offset])
+    expect(places[1]).to.deep.equal(insertPlaces[1 + offset])
   })
 
   it('Should update place successfully', async () => {
     const placeSource = new PlaceSource()
     // Given one place in data source.
-    const newPlace = await placeSource.addPlace(SAMPLE_PLACES[0])
+    const newPlace = await placeSource.addPlace(Object.assign({}, SAMPLE_PLACES[0]))
     // When change some attributes and update in data source
     newPlace.place_name = SAMPLE_PLACES[2].place_name
     newPlace.latitude = SAMPLE_PLACES[2].latitude
@@ -96,7 +95,7 @@ describe('Sample Place Source', () => {
   it('Should not update place when place_id is not exist in data source', async () => {
     const placeSource = new PlaceSource()
     // Given one place in data source.
-    await placeSource.addPlace(SAMPLE_PLACES[0])
+    await placeSource.addPlace(Object.assign({}, SAMPLE_PLACES[0]))
     try {
       // When try to update place by place_id which not exists in data source.
       await placeSource.updatePlace(SAMPLE_PLACES[3])
@@ -110,7 +109,7 @@ describe('Sample Place Source', () => {
   it('Should delete place successfully and not being retrieved', async () => {
     const placeSource = new PlaceSource()
     // Given one place into data source.
-    const newPlace = await placeSource.addPlace(SAMPLE_PLACES[0])
+    const newPlace = await placeSource.addPlace(Object.assign({}, SAMPLE_PLACES[0]))
     // When delete place by given place_id.
     await placeSource.deletePlace(newPlace.place_id)
     // Then place should not be retrieved from data source
@@ -121,7 +120,7 @@ describe('Sample Place Source', () => {
   it('Should not delete place when place_id is not exists in data source', async () => {
     const placeSource = new PlaceSource()
     // Given one place in data source
-    await placeSource.addPlace(SAMPLE_PLACES[0])
+    await placeSource.addPlace(Object.assign({}, SAMPLE_PLACES[0]))
     try {
       // When try to delete place by place_id which not exists in data source.
       await placeSource.deletePlace('NOT_EXISTS_PLACE_ID')
