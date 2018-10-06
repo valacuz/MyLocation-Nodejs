@@ -7,7 +7,7 @@ const placeSchema = new mongoose.Schema({
   place_type: { type: mongoose.Schema.Types.ObjectId, ref: 'PlaceType' },
   latitude: Number,
   longitude: Number,
-  starred: Boolean,
+  starred: { type: Boolean, default: false },
   picture_url: String
 })
 
