@@ -5,54 +5,40 @@ const TypeSource = function () { }
 
 var types = []
 
-TypeSource.prototype.getTypes = () => Promise.resolve(types)
-
-TypeSource.prototype.getTypeById = (id) => {
-  return new Promise((resolve, reject) => {
-    const type = types.find(item => item.type_id === id)
-    resolve(type)
-  })
+TypeSource.prototype.getTypes = async () => {
+  return types
 }
 
-TypeSource.prototype.addType = (type) => {
-  return new Promise((resolve, reject) => {
-    type.type_id = uuidv4() // Insert or replace type_id with random UUID
-    types.push(type)
-    resolve(type)
-  })
+TypeSource.prototype.getTypeById = async (id) => {
+  return types.find(item => item.type_id === id)
 }
 
-TypeSource.prototype.updateType = (type) => {
-  return new Promise((resolve, reject) => {
-    var index = types.findIndex((item) => item.type_id === type.type_id)
-    if (index >= 0) {
-      types[index] = type
-      resolve()
-    } else {
-      reject(Error('Place type with given id was not found.'))
-    }
-  })
+TypeSource.prototype.addType = async (type) => {
+  type.type_id = uuidv4() // Insert or replace type_id with random UUID
+  types.push(type)
+  return type
 }
 
-TypeSource.prototype.deleteType = (id) => {
-  return new Promise((resolve, reject) => {
-    var index = types.findIndex(item => item.type_id === id)
-    if (index >= 0) {
-      // Find index of item then splice.
-      types.splice(index, 1)
-      resolve()
-    } else {
-      // Cannot delete item because we cannot find item with is `type_id` is matched to given id.
-      reject(Error('Place type with given id was not found.'))
-    }
-  })
+TypeSource.prototype.updateType = async (type) => {
+  const index = types.findIndex(item => item.type_id === type.type_id)
+  if (index >= 0) {
+    types[index] = type
+  } else {
+    throw Error('Place type with given type_id was not found')
+  }
 }
 
-TypeSource.prototype.clearAll = () => {
-  return new Promise((resolve, reject) => {
-    types.length = 0
-    resolve()
-  })
+TypeSource.prototype.deleteType = async (id) => {
+  const index = types.findIndex(item => item.type_id === id)
+  if (index >= 0) {
+    types.splice(index, 1)
+  } else {
+    throw Error('Place type with given type_id was not found')
+  }
+}
+
+TypeSource.prototype.clearAll = async () => {
+  types.length = 0
 }
 
 module.exports = TypeSource

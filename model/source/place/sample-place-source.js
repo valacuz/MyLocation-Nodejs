@@ -5,58 +5,42 @@ const PlaceSource = function () { }
 
 var places = []
 
-PlaceSource.prototype.getPlaces = (offset, limit) => {
-  return new Promise((resolve, reject) => {
-    resolve(places.slice(offset, offset + limit))
-  })
+PlaceSource.prototype.getPlaces = async (offset = 0, limit = 20) => {
+  offset = Math.max(0, offset)
+  limit = Math.min(30, limit)
+  return places.slice(offset, offset + limit)
 }
 
-PlaceSource.prototype.getPlaceById = (id) => {
-  return new Promise((resolve, reject) => {
-    const place = places.find(item => item.place_id === id)
-    resolve(place)
-  })
+PlaceSource.prototype.getPlaceById = async (id) => {
+  return places.find(item => item.place_id === id)
 }
 
-PlaceSource.prototype.addPlace = (place) => {
-  return new Promise((resolve, reject) => {
-    place.place_id = uuidv4() // Insert or replace place_id with UUID
-    places.push(place)
-    resolve(place)
-  })
+PlaceSource.prototype.addPlace = async (place) => {
+  place.place_id = uuidv4() // Insert or replace place_id with UUID
+  places.push(place)
+  return place
 }
 
-PlaceSource.prototype.updatePlace = (place) => {
-  return new Promise((resolve, reject) => {
-    var index = places.findIndex((item) => item.place_id === place.place_id)
-    if (index >= 0) {
-      places[index] = place
-      resolve()
-    } else {
-      reject(Error('Place wtih given id was not found.'))
-    }
-  })
+PlaceSource.prototype.updatePlace = async (place) => {
+  const index = places.findIndex(item => item.place_id === place.place_id)
+  if (index >= 0) {
+    places[index] = place
+  } else {
+    throw Error('Place with given place_id was not found')
+  }
 }
 
-PlaceSource.prototype.deletePlace = (id) => {
-  return new Promise((resolve, reject) => {
-    var index = places.findIndex(item => item.place_id === id)
-    if (index >= 0) {
-      // Find index of item then splice.
-      places.splice(index, 1)
-      resolve()
-    } else {
-      // Cannot delete item because we cannot find item with `place_id` is matched to given id.
-      reject(Error('Place with given id was not found.'))
-    }
-  })
+PlaceSource.prototype.deletePlace = async (id) => {
+  const index = places.findIndex(item => item.place_id === id)
+  if (index >= 0) {
+    places.splice(index, 1)
+  } else {
+    throw Error('Place with given place_id was not found')
+  }
 }
 
-PlaceSource.prototype.clearAll = () => {
-  return new Promise((resolve, reject) => {
-    places = []
-    resolve()
-  })
+PlaceSource.prototype.clearAll = async () => {
+  places.length = 0
 }
 
 module.exports = PlaceSource
