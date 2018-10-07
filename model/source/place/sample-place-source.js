@@ -5,7 +5,7 @@ const PlaceSource = function () { }
 
 var places = []
 
-PlaceSource.prototype.getPlaces = async (offset = 0, limit = 20) => {
+PlaceSource.prototype.getPlaces = async (offset, limit) => {
   offset = Math.max(0, offset)
   limit = Math.min(30, limit)
   return places.slice(offset, offset + limit)

@@ -49,7 +49,7 @@ describe('Sample Place Source', () => {
       await placeSource.addPlace(insertPlaces[i])
     }
     // When try to query all places from data source.
-    const places = await placeSource.getPlaces()
+    const places = await placeSource.getPlaces(0, 20)
     // Then all places which just added should be found.
     expect(places).to.have.lengthOf(SAMPLE_PLACES.length)
     for (i = 0; i < insertPlaces.length; i++) {
