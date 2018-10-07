@@ -5,7 +5,7 @@ const objectId = require('mongodb').ObjectID
 const Place = mongoose.model('Place')
 const PlaceSource = function () { }
 
-PlaceSource.prototype.getPlaces = (offset = 0, limit = 20) => {
+PlaceSource.prototype.getPlaces = (offset, limit) => {
   offset = Math.max(0, offset)
   limit = Math.min(30, limit)
   return Place.find().skip(offset).limit(limit).exec()
