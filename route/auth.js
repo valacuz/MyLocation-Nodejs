@@ -12,6 +12,7 @@ function getTokenFromHeader (request) {
 // Work around when express-jwt throw error because of unauthorized.
 // references: https://github.com/auth0/express-jwt#error-handling
 module.exports.jwtErrorHandling = function (err, request, response, next) {
+  /* istanbul ignore if */
   if (err.name === 'UnauthorizedError') {
     response.sendStatus(401)
   }
